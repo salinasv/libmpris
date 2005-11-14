@@ -50,8 +50,10 @@ CFLAGS="$CFLAGS -Wall -pedantic -std=c99"
 AC_CONFIG_FILES([
     Makefile
     libmpris/Makefile
+    src/Makefile
     include/Makefile
     include/libmpris/Makefile
+    include/libmpris/mpris/Makefile
 ])
 
 AC_OUTPUT
