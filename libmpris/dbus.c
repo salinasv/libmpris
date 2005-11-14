@@ -39,10 +39,10 @@ mpris_dbus_init (void)
   return TRUE;
 }
 
-GPtrArray*
+GList*
 mpris_dbus_list (void)
 {
-  GPtrArray  *players = NULL;
+  GList      *players = NULL;
   gchar	    **names = NULL;
   gint	      n = 0;
   gint	     id = 0;
@@ -57,19 +57,46 @@ mpris_dbus_list (void)
       return NULL;
     }
   
-  players = g_ptr_array_new ();
- 
   while (names[n])
     {
       if (!g_ascii_strncasecmp (MPRIS_INTERFACE_PREFIX, names[n], strlen(MPRIS_INTERFACE_PREFIX)))
 	{
-	  MPRISPlayerInfo *p_info = g_new0 (MPRISPlayerInfo,1);
+	  DBusGProxy	   *player = NULL;
+	  MPRISPlayerInfo  *p_info = g_new0 (MPRISPlayerInfo,1);
+	  gchar		  **elements, 
+			    *_path, *path,
+			    *name;
 
-	  p_info->id = id;
-	  p_info->name = g_strdup (names[n]);
-	  p_info->interface = g_strdup (names[n]);
+	  elements = g_strsplit (names[n], ".", -1); 
+	  _path = g_strjoinv ("/", elements); 
+	  path = g_strconcat ("/", _path, "/SystemControl", NULL);
 
-	  g_ptr_array_add (players, p_info);
+	  player = dbus_g_proxy_new_for_name (bus, names[n], 
+						   path, 
+						   names[n]); 
+
+	  g_free (_path);
+	  g_free (path);
+
+	  if (!dbus_g_proxy_call (player, "Identity", &error,
+                          G_TYPE_INVALID,
+                          G_TYPE_STRING, 
+			  &name,
+                          G_TYPE_INVALID))
+	    {
+	      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL, "Couldn't run Identity() on interface %s: '%s'", names[n], error->message);
+	    }
+	  else
+	    {
+	      p_info->id = id;
+	      p_info->name = g_strdup (name);
+	      p_info->interface = g_strdup (names[n]);
+	      g_free (name);
+	    }
+
+	  g_object_unref (player); 
+
+	  players = g_list_append (players, p_info);
 	  id++;
 	}
       n++;
