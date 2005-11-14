@@ -1,19 +1,10 @@
 #ifndef _MPRIS_DBUS_H_
 #define _MPRIS_DBUS_H_
 
-typedef struct _MPRISPlayerInfo MPRISPlayerInfo;
-
-struct _MPRISPlayerInfo {
-    gint   id;
-
-    gchar *name;
-    gchar *interface;
-};
-
 gboolean
 mpris_dbus_init (void);
 
-GPtrArray*
+GList*
 mpris_dbus_list (void);
 
 #endif /* _MPRIS_DBUS_H_ */
