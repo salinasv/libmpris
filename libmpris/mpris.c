@@ -5,14 +5,14 @@
 #include <mpris/mpris-list.h>
 
 MPRISPlayerInfo**
-mpris_list (void)
+mpris_list_clients (void)
 {
   struct list_head *head;
   MPRISPlayerInfo **list;
   MPRISPlayerInfo *item;
   int count = 0;
 
-  head = mpris_dbus_list ();
+  head = mpris_dbus_list_clients ();
 
   list_for_each_entry (item, head, node)
     {

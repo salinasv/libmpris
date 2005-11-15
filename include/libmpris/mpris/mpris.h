@@ -17,6 +17,6 @@ int
 mpris_init (void);
 
 MPRISPlayerInfo**
-mpris_list (void);
+mpris_list_clients (void);
 
 #endif /* _MPRIS_H_ */

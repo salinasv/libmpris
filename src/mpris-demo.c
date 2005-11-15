@@ -8,18 +8,18 @@
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
 #include <mpris/connection.h>
+#include <mpris/mpris-list.h>
 
-GtkWidget	  *window,
-		  *cbox_players;
+GtkWidget	  *window, *cbox_players;
 GladeXML	  *xml;
 
-#if 0
 typedef struct _FOOBAR FOOBAR;
 struct _FOOBAR {
-  GList		  *players;
-  MPRISConnection *connection;
+  struct list_head   players;
+  MPRISConnection   *connection;
 };
 
+#if 0
 void
 on_button_connect_clicked (GtkWidget *widget, FOOBAR *foobar)
 {
@@ -73,20 +73,23 @@ on_button_play_clicked (GtkWidget *widget, FOOBAR *foobar)
 gint
 main (gint n_args, gchar **args)
 {
-#if 0
-  FOOBAR	  *foobar = g_new0 (FOOBAR,1);
-#endif
-  GList		  *iter_list = NULL;
-  const gchar	  *xml_file  = DATA_DIR "/glade/mpris-demo.glade";
-  struct list_head players;
+  FOOBAR	   *foobar = g_new0 (FOOBAR,1);
+  GList		   *iter_list = NULL;
+  const gchar	   *xml_file  = DATA_DIR "/glade/mpris-demo.glade";
+  list_item_t	   *item;
 
   gtk_init (&n_args, &args);
 
   xml = glade_xml_new (xml_file, NULL, NULL);
   window = glade_xml_get_widget (xml, "window");
 
-//  foobar->players = mpris_list ();
-  mpris_list (&players);
+  foobar->players = mpris_list_clients ();
+
+  list_for_each_entry (item, &(foobar->players), node)
+    {
+      MPRISPlayerInfo *p_info = (MPRISPlayerInfo*)item->data;
+      printf("entry = %s\n", p_info->path); 
+    }
 
 #if 0
   if (!foobar->players)

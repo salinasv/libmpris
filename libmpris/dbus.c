@@ -92,7 +92,7 @@ dbus_message_call_simple (DBusConnection *conn,
 }
 
 struct list_head*
-mpris_dbus_list (void)
+mpris_dbus_list_clients (void)
 {
   DBusError	    err;
   DBusMessage	   *msg;

@@ -51,6 +51,12 @@ struct list_head {
 	struct list_head *next, *prev;
 };
 
+typedef struct {
+    struct list_head node;
+
+    void *data;
+} list_item_t;
+
 #define LIST_HEAD_INIT(name) { &(name), &(name) }
 
 #define LIST_HEAD(name) \
