@@ -9,7 +9,7 @@ struct _MPRISConnection {
 };
 #endif
 
-static gchar* method_names[] = {
+static char* method_names[] = {
       "PlayNext",
       "PlayPrev",
       "PlayPause",

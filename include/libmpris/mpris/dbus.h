@@ -1,22 +1,19 @@
 #ifndef _MPRIS_DBUS_H_
 #define _MPRIS_DBUS_H_
 
-#include <glib.h>
-#include <glib-object.h>
-
 #include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
+#include <mpris/mpris-list.h>
 
 extern DBusConnection  *conn;
 
 DBusConnection*
 mpris_dbus_get (void);
  
-gboolean
+int
 mpris_dbus_init (void);
 
-GList*
-mpris_dbus_list (void);
+int
+mpris_dbus_list (struct list_head *players);
 
 #endif /* _MPRIS_DBUS_H_ */
 

@@ -19,7 +19,7 @@ typedef enum {
 */
 } MPRISMethodId;
 
-gboolean
+int
 mpris_connection_invoke_method (MPRISConnection *connection, MPRISMethodId method_id);
 
 #endif /* _MPRIS_CONNECTION_H_ */

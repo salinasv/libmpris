@@ -1,8 +1,9 @@
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
+#include <mpris/mpris-list.h>
 
-GList*
-mpris_list (void)
+int
+mpris_list (struct list_head *players)
 {
-  return mpris_dbus_list ();
+  return mpris_dbus_list (players);
 }

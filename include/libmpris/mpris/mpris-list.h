@@ -443,4 +443,10 @@ static __inline__ void hlist_add_after(struct hlist_node *n,
 		({ tpos = hlist_entry(pos, typeof(*tpos), member); 1;}); \
 	     pos = n)
 
+typedef struct {
+    struct list_head node;
+
+    void *data;
+} list_item_t;
+
 #endif

@@ -78,6 +78,7 @@ main (gint n_args, gchar **args)
 #endif
   GList		  *iter_list = NULL;
   const gchar	  *xml_file  = DATA_DIR "/glade/mpris-demo.glade";
+  struct list_head players;
 
   gtk_init (&n_args, &args);
 
@@ -85,7 +86,7 @@ main (gint n_args, gchar **args)
   window = glade_xml_get_widget (xml, "window");
 
 //  foobar->players = mpris_list ();
-  mpris_list ();
+  mpris_list (&players);
 
 #if 0
   if (!foobar->players)

@@ -53,10 +53,10 @@ demarshal_strv (DBusMessageIter	        *iter)
 static int
 dbus_message_call_simple (DBusConnection *conn,
 			  DBusMessage **msg,
-			  const gchar *target,
-			  const gchar *object,
-			  const gchar *iface,
-			  const gchar *method)
+			  const char *target,
+			  const char *object,
+			  const char *iface,
+			  const char *method)
 {
   DBusPendingCall  *pending;
 
@@ -93,8 +93,8 @@ mpris_dbus_list (struct list_head *_players)
   DBusError	    err;
   DBusMessage	   *msg;
   DBusMessageIter   args;
-  gchar		  **names = NULL;
-  gint		    n = 0;
+  char		  **names = NULL;
+  int		    n = 0;
 
   struct list_head players = *_players;
 
@@ -130,8 +130,8 @@ mpris_dbus_list (struct list_head *_players)
     {
       if (!strncasecmp (MPRIS_INTERFACE_PREFIX, names[n], strlen(MPRIS_INTERFACE_PREFIX)))
 	{
-	  MPRISPlayerInfo  *p_info = g_new0 (MPRISPlayerInfo,1);
-	  gchar		   *path,
+	  MPRISPlayerInfo  *p_info = malloc (sizeof(MPRISPlayerInfo));
+	  char		   *path,
 			   *rstring;
 	  list_item_t	   *item;
 
@@ -171,7 +171,7 @@ mpris_dbus_list (struct list_head *_players)
 
 	  item = malloc (sizeof(list_item_t));
 	  item->data = p_info;
-	  list_add_tail (&item->node, players);
+	  list_add_tail (&item->node, &players);
 	}
       n++;
     }

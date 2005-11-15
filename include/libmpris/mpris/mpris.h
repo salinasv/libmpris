@@ -1,20 +1,20 @@
 #ifndef _MPRIS_H_
 #define _MPRIS_H_
 
-#include <glib.h>
 #include <mpris/dbus.h>
+#include <mpris/mpris-list.h>
 
 typedef struct _MPRISPlayerInfo MPRISPlayerInfo;
 struct _MPRISPlayerInfo {
-    gchar *name;
-    gchar *interface;
-    gchar *path;
+    char *name;
+    char *interface;
+    char *path;
 };
 
-gboolean
+int
 mpris_init (void);
 
-GList*
-mpris_list (void);
+int
+mpris_list (struct list_head *players);
 
 #endif /* _MPRIS_H_ */
