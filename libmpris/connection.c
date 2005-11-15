@@ -23,10 +23,10 @@ mpris_connection_establish (MPRISPlayerInfo *info)
 {
     MPRISConnection *conn = g_new0 (MPRISConnection,1);
 
-    conn->player = dbus_g_proxy_new_for_name (dbus_g_bus_get (DBUS_BUS_SESSION, NULL),
-							       info->interface, 
-							       info->path,
-							       info->interface); 
+    conn->player = dbus_g_proxy_new_for_name (mpris_bus,
+					      info->interface, 
+					      info->path,
+					      info->interface); 
 
     if (!conn->player)
       {

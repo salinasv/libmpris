@@ -11,10 +11,11 @@
 
 #define MPRIS_INTERFACE_PREFIX	"org.mpris"
 
+DBusGConnection  *mpris_bus;
+
 GList*
 mpris_dbus_list (void)
 {
-  DBusGConnection *bus;
   DBusGProxy	  *bus_proxy; 
   GError	  *error = NULL;
   GList		  *players = NULL;
@@ -24,15 +25,15 @@ mpris_dbus_list (void)
 
   dbus_g_type_specialized_init ();
 
-  bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+  mpris_bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
 
-  if (!bus)
+  if (!mpris_bus)
     {
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL, "Couldn't connect to session bus: %s", error->message);
       return FALSE;
     }
 
-  bus_proxy = dbus_g_proxy_new_for_name (bus, "org.freedesktop.DBus",
+  bus_proxy = dbus_g_proxy_new_for_name (mpris_bus, "org.freedesktop.DBus",
 					      "/org/freedesktop/DBus",
 					      "org.freedesktop.DBus");
   
@@ -64,7 +65,7 @@ mpris_dbus_list (void)
 	  _path = g_strjoinv ("/", elements); 
 	  path = g_strconcat ("/", _path, "/SystemControl", NULL);
 
-	  player = dbus_g_proxy_new_for_name (bus, names[n], 
+	  player = dbus_g_proxy_new_for_name (mpris_bus, names[n], 
 						   path, 
 						   names[n]); 
 
