@@ -4,6 +4,12 @@
 #include <mpris/dbus.h>
 #include <mpris/mpris-list.h>
 
+int
+mpris_init (void)
+{
+  return mpris_dbus_init ();
+}
+
 MPRISPlayerInfo**
 mpris_list_clients (void)
 {

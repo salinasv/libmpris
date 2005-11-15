@@ -6,15 +6,19 @@
 
 extern DBusConnection  *conn;
 
-DBusConnection*
-mpris_dbus_get (void);
-
-
 int
 mpris_dbus_init (void);
 
 struct list_head*
 mpris_dbus_list_clients (void);
 
+/* Auxilliary DBus stuff */
+int
+dbus_message_call_simple (DBusConnection *conn,
+			  DBusMessage **msg,
+			  const char *target,
+			  const char *object,
+			  const char *iface,
+			  const char *method);
 #endif /* _MPRIS_DBUS_H_ */
 

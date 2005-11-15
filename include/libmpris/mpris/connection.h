@@ -4,8 +4,6 @@
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
 
-typedef struct _MPRISConnection MPRISConnection;
-
 typedef enum { 
       MPRIS_METHOD_PLAY_NEXT,
       MPRIS_METHOD_PLAY_PREV,
@@ -20,6 +18,6 @@ typedef enum {
 } MPRISMethodId;
 
 int
-mpris_connection_invoke_method (MPRISConnection *connection, MPRISMethodId method_id);
+mpris_invoke_method (MPRISPlayerInfo *p_info, MPRISMethodId method_id);
 
 #endif /* _MPRIS_CONNECTION_H_ */

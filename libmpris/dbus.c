@@ -54,7 +54,7 @@ demarshal_strv (DBusMessageIter	        *iter)
   return ret;
 }
 
-static int
+int
 dbus_message_call_simple (DBusConnection *conn,
 			  DBusMessage **msg,
 			  const char *target,
@@ -91,6 +91,20 @@ dbus_message_call_simple (DBusConnection *conn,
   return 1;
 }
 
+int
+mpris_dbus_init (void)
+{
+  DBusError	    err;
+
+  dbus_error_init (&err);
+  conn = dbus_bus_get (DBUS_BUS_SESSION, &err);
+
+  if (!conn)
+    return 0;
+  else
+    return 1;
+}
+
 struct list_head*
 mpris_dbus_list_clients (void)
 {
@@ -99,12 +113,6 @@ mpris_dbus_list_clients (void)
   DBusMessageIter   args;
   char		  **names = NULL;
   int		    n = 0;
-
-  dbus_error_init (&err);
-  conn = dbus_bus_get (DBUS_BUS_SESSION, &err);
-
-  if (!conn)
-      return NULL;
 
   dbus_message_call_simple (conn,
 			    &msg,

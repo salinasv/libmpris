@@ -1,13 +1,9 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
 #include <mpris/connection.h>
-
-#if 0
-struct _MPRISConnection {
-      MPRISPlayerInfo *info;
-      DBusGProxy      *player;
-};
-#endif
 
 static char* method_names[] = {
       "PlayNext",
@@ -17,30 +13,8 @@ static char* method_names[] = {
       "PlayCurrent"
 };
 
-#if 0
-MPRISConnection*
-mpris_connection_establish (MPRISPlayerInfo *info)
-{
-    MPRISConnection *conn = g_new0 (MPRISConnection,1);
-
-    conn->player = dbus_g_proxy_new_for_name (mpris_bus,
-					      info->interface, 
-					      info->path,
-					      info->interface); 
-
-    if (!conn->player)
-      {
-	g_free (conn);
-	return NULL;
-      }
-
-    conn->info = info; 
-
-    return conn;
-}
-
-gboolean
-mpris_connection_invoke_method (MPRISConnection *connection, MPRISMethodId method_id)
+int
+mpris_invoke_method (MPRISPlayerInfo *p_info, MPRISMethodId method_id)
 {
      switch (method_id) 
       {
@@ -50,23 +24,19 @@ mpris_connection_invoke_method (MPRISConnection *connection, MPRISMethodId metho
 	case MPRIS_METHOD_PLAY_STOP:
 	case MPRIS_METHOD_PLAY_CURRENT:
 	  {
-	      GError	    *error = NULL;
+	      DBusMessage	   *msg;
 
-	      if (!dbus_g_proxy_call (connection->player,
-				      method_names[method_id], 
-				      &error,
-				      G_TYPE_INVALID, 
-				      G_TYPE_INVALID))
-		{
-		  g_message(error->message);
-		  g_error_free (error);
-		  return FALSE;
-		}
-	      return TRUE;
+	      dbus_message_call_simple (conn,
+					&msg,
+					p_info->interface,	
+					p_info->path, 
+					p_info->interface,	
+					method_names[method_id]);
+
+	      return 1;
 	  }
 	  break;
 
-	default: { g_log (G_LOG_DOMAIN, G_LOG_LEVEL_WARNING, "%s: Unknown MPRIS method id %d", G_STRLOC, method_id); return FALSE; }
+	default: { fprintf (stderr, "%s(%d): Unknown MPRIS method id %d", __FILE__, __LINE__ , method_id); return 0; }
       }
 }
-#endif

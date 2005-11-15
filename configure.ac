@@ -41,7 +41,7 @@ dnl GTK
 PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.8.0])
 
 dnl DBus
-PKG_CHECK_MODULES([DBUS], [dbus-1 >= 0.35.2 dbus-glib-1 >= 0.35.2])
+PKG_CHECK_MODULES([DBUS], [dbus-1 >= 0.35.2])
 
 dnl XML stuff
     PKG_CHECK_MODULES([XML],
@@ -52,7 +52,7 @@ dnl GLADE
 	[libglade-2.0])
 
 dnl CFLAGS
-CFLAGS="$CFLAGS -Wall -pedantic" # -std=c99 do not work with list_ stuff
+CFLAGS="$CFLAGS -Wall -pedantic" # -std=c99"
 
 dnl Example DEFINES 
 MPRIS_DEFINES="-DDATA_DIR=\\\"\$(pkgdatadir)\\\""
