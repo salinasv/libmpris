@@ -1,6 +1,15 @@
 #ifndef _MPRIS_DBUS_H_
 #define _MPRIS_DBUS_H_
 
+#include <glib.h>
+#include <glib-object.h>
+
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib.h>
+
+DBusGConnection*
+mpris_dbus_get (void);
+ 
 gboolean
 mpris_dbus_init (void);
 

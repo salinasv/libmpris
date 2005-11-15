@@ -37,15 +37,26 @@ AC_PROG_LIBTOOL
 dnl GLIB
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.8.0 gobject-2.0 gthread-2.0 gmodule-2.0])
 
+dnl GTK
+PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.8.0])
+
 dnl DBus
-PKG_CHECK_MODULES([GLIB], [dbus-1 >= 0.35.2 dbus-glib-1 >= 0.35.2])
+PKG_CHECK_MODULES([DBUS], [dbus-1 >= 0.35.2 dbus-glib-1 >= 0.35.2])
 
 dnl XML stuff
     PKG_CHECK_MODULES([XML],
 	[libxml-2.0 >= 2.6.17])
 
+dnl GLADE 
+    PKG_CHECK_MODULES([GLADE],
+	[libglade-2.0])
+
 dnl CFLAGS
 CFLAGS="$CFLAGS -Wall -pedantic -std=c99"
+
+dnl Example DEFINES 
+MPRIS_DEFINES="-DDATA_DIR=\\\"\$(pkgdatadir)\\\""
+AC_SUBST([MPRIS_DEFINES])
 
 AC_CONFIG_FILES([
     Makefile

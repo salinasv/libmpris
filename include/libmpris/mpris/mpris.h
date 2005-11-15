@@ -6,16 +6,15 @@
 
 typedef struct _MPRISPlayerInfo MPRISPlayerInfo;
 struct _MPRISPlayerInfo {
-    gint   id;
-
     gchar *name;
     gchar *interface;
+    gchar *path;
 };
 
 gboolean
 mpris_init (void);
 
-GPtrArray*
+GList*
 mpris_list (void);
 
 #endif /* _MPRIS_H_ */
