@@ -1,6 +1,3 @@
-#include <glib.h>
-#include <glib-object.h>
-
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
 #include <mpris/connection.h>

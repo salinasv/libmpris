@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <stddef.h>
 
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
+#include <mpris/mpris-list.h>
 
 #define MPRIS_INTERFACE_PREFIX	"org.mpris"
 
@@ -85,8 +87,8 @@ dbus_message_call_simple (DBusConnection *conn,
   return 1;
 }
 
-GList*
-mpris_dbus_list (void)
+int
+mpris_dbus_list (struct list_head *_players)
 {
   DBusError	    err;
   DBusMessage	   *msg;
@@ -94,11 +96,15 @@ mpris_dbus_list (void)
   gchar		  **names = NULL;
   gint		    n = 0;
 
+  struct list_head players = *_players;
+
+  LIST_HEAD (players);
+
   dbus_error_init (&err);
   conn = dbus_bus_get (DBUS_BUS_SESSION, &err);
 
   if (!conn)
-      return NULL;
+      return 0;
 
   dbus_message_call_simple (conn,
 			    &msg,
@@ -108,14 +114,14 @@ mpris_dbus_list (void)
 			    "ListNames");
 
   if (!dbus_message_iter_init(msg, &args))
-      return NULL;
+      return 0;
 
   else if (DBUS_TYPE_ARRAY == dbus_message_iter_get_arg_type(&args)) 
       names = demarshal_strv (&args);
   else
     {
       dbus_message_unref(msg);   
-      return NULL;
+      return 0;
     }
 
   dbus_message_unref(msg);   
@@ -125,8 +131,9 @@ mpris_dbus_list (void)
       if (!strncasecmp (MPRIS_INTERFACE_PREFIX, names[n], strlen(MPRIS_INTERFACE_PREFIX)))
 	{
 	  MPRISPlayerInfo  *p_info = g_new0 (MPRISPlayerInfo,1);
-	  gchar		    *path,
-			    *rstring;
+	  gchar		   *path,
+			   *rstring;
+	  list_item_t	   *item;
 
 #define OBJ_PREFIX "/org/mpris/"
 
@@ -162,10 +169,12 @@ mpris_dbus_list (void)
 
 	  free (path);
 
-//	  players = g_list_append (players, p_info);
+	  item = malloc (sizeof(list_item_t));
+	  item->data = p_info;
+	  list_add_tail (&item->node, players);
 	}
       n++;
     }
 
-  return NULL;
+  return 1;
 }
