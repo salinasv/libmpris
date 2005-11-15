@@ -15,7 +15,7 @@ GladeXML	  *xml;
 
 typedef struct _FOOBAR FOOBAR;
 struct _FOOBAR {
-  MPRISPlayerInfo   **players;
+  MPRISPlayerInfo  **players;
   MPRISConnection   *connection;
 };
 
@@ -76,20 +76,31 @@ main (gint n_args, gchar **args)
   FOOBAR	   *foobar = g_new0 (FOOBAR,1);
   GList		   *iter_list = NULL;
   const gchar	   *xml_file  = DATA_DIR "/glade/mpris-demo.glade";
-  gint		   count = 0;
+  list_item_t	   *item;
+  gint		    n = 0;
 
   gtk_init (&n_args, &args);
+  mpris_init ();
 
   xml = glade_xml_new (xml_file, NULL, NULL);
   window = glade_xml_get_widget (xml, "window");
 
   foobar->players = mpris_list_clients ();
 
-  while (foobar->players[count])
+  while (foobar->players[n])
     {
-      MPRISPlayerInfo *p_info = foobar->players[count++];
-      printf("entry = %s\n", p_info->path);
+      MPRISPlayerInfo *p_info = (MPRISPlayerInfo*)foobar->players[n];
+      printf("entry = %s\n", p_info->path); 
+      n++;
     }
+
+#if 0
+  list_for_each_entry (item, &(foobar->players), node)
+    {
+      MPRISPlayerInfo *p_info = (MPRISPlayerInfo*)item->data;
+      printf("entry = %s\n", p_info->path); 
+    }
+#endif
 
 #if 0
   if (!foobar->players)
