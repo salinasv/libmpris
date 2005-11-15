@@ -5,10 +5,12 @@
 #include <mpris/dbus.h>
 #include <mpris/connection.h>
 
+#if 0
 struct _MPRISConnection {
       MPRISPlayerInfo *info;
       DBusGProxy      *player;
 };
+#endif
 
 static gchar* method_names[] = {
       "PlayNext",
@@ -18,6 +20,7 @@ static gchar* method_names[] = {
       "PlayCurrent"
 };
 
+#if 0
 MPRISConnection*
 mpris_connection_establish (MPRISPlayerInfo *info)
 {
@@ -69,3 +72,4 @@ mpris_connection_invoke_method (MPRISConnection *connection, MPRISMethodId metho
 	default: { g_log (G_LOG_DOMAIN, G_LOG_LEVEL_WARNING, "%s: Unknown MPRIS method id %d", G_STRLOC, method_id); return FALSE; }
       }
 }
+#endif

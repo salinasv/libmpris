@@ -13,6 +13,7 @@ GtkWidget	  *window,
 		  *cbox_players;
 GladeXML	  *xml;
 
+#if 0
 typedef struct _FOOBAR FOOBAR;
 struct _FOOBAR {
   GList		  *players;
@@ -67,11 +68,14 @@ on_button_play_clicked (GtkWidget *widget, FOOBAR *foobar)
 {
   mpris_connection_invoke_method (foobar->connection, MPRIS_METHOD_PLAY_CURRENT);
 }
+#endif
 
 gint
 main (gint n_args, gchar **args)
 {
+#if 0
   FOOBAR	  *foobar = g_new0 (FOOBAR,1);
+#endif
   GList		  *iter_list = NULL;
   const gchar	  *xml_file  = DATA_DIR "/glade/mpris-demo.glade";
 
@@ -80,11 +84,15 @@ main (gint n_args, gchar **args)
   xml = glade_xml_new (xml_file, NULL, NULL);
   window = glade_xml_get_widget (xml, "window");
 
-  foobar->players = mpris_list ();
+//  foobar->players = mpris_list ();
+  mpris_list ();
 
+#if 0
   if (!foobar->players)
     g_message ("Couldn't get list of MPRIS compliant services"); 
+#endif
 
+#if 0
   cbox_players = glade_xml_get_widget (xml, "cbox_players");
   gtk_combo_box_remove_text (GTK_COMBO_BOX(cbox_players), 0);
 
@@ -106,6 +114,7 @@ main (gint n_args, gchar **args)
   gtk_widget_show_all (window);
 
   gtk_main ();
+#endif
 
   exit (0);
 }

@@ -7,9 +7,9 @@
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 
-extern DBusGConnection  *mpris_bus;
+extern DBusConnection  *conn;
 
-DBusGConnection*
+DBusConnection*
 mpris_dbus_get (void);
  
 gboolean
