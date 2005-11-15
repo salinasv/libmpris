@@ -6,6 +6,8 @@
 
 typedef struct _MPRISPlayerInfo MPRISPlayerInfo;
 struct _MPRISPlayerInfo {
+    struct list_head node;
+
     char *name;
     char *interface;
     char *path;
@@ -14,7 +16,7 @@ struct _MPRISPlayerInfo {
 int
 mpris_init (void);
 
-int
-mpris_list (struct list_head *players);
+MPRISPlayerInfo**
+mpris_list (void);
 
 #endif /* _MPRIS_H_ */

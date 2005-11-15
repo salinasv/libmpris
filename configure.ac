@@ -52,7 +52,7 @@ dnl GLADE
 	[libglade-2.0])
 
 dnl CFLAGS
-CFLAGS="$CFLAGS -Wall -pedantic -std=c99"
+CFLAGS="$CFLAGS -Wall -pedantic" # -std=c99 do not work with list_ stuff
 
 dnl Example DEFINES 
 MPRIS_DEFINES="-DDATA_DIR=\\\"\$(pkgdatadir)\\\""

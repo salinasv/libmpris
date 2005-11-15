@@ -12,8 +12,8 @@ mpris_dbus_get (void);
 int
 mpris_dbus_init (void);
 
-int
-mpris_dbus_list (struct list_head *players);
+struct list_head*
+mpris_dbus_list (void);
 
 #endif /* _MPRIS_DBUS_H_ */
 

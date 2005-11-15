@@ -13,6 +13,10 @@
 
 DBusConnection  *conn;
 
+struct list_head players;
+
+LIST_HEAD (players);
+
 static char**
 demarshal_strv (DBusMessageIter	        *iter)
 {
@@ -87,8 +91,8 @@ dbus_message_call_simple (DBusConnection *conn,
   return 1;
 }
 
-int
-mpris_dbus_list (struct list_head *_players)
+struct list_head*
+mpris_dbus_list (void)
 {
   DBusError	    err;
   DBusMessage	   *msg;
@@ -96,15 +100,11 @@ mpris_dbus_list (struct list_head *_players)
   char		  **names = NULL;
   int		    n = 0;
 
-  struct list_head players = *_players;
-
-  LIST_HEAD (players);
-
   dbus_error_init (&err);
   conn = dbus_bus_get (DBUS_BUS_SESSION, &err);
 
   if (!conn)
-      return 0;
+      return NULL;
 
   dbus_message_call_simple (conn,
 			    &msg,
@@ -114,14 +114,14 @@ mpris_dbus_list (struct list_head *_players)
 			    "ListNames");
 
   if (!dbus_message_iter_init(msg, &args))
-      return 0;
+      return NULL;
 
   else if (DBUS_TYPE_ARRAY == dbus_message_iter_get_arg_type(&args)) 
       names = demarshal_strv (&args);
   else
     {
       dbus_message_unref(msg);   
-      return 0;
+      return NULL;
     }
 
   dbus_message_unref(msg);   
@@ -133,7 +133,6 @@ mpris_dbus_list (struct list_head *_players)
 	  MPRISPlayerInfo  *p_info = malloc (sizeof(MPRISPlayerInfo));
 	  char		   *path,
 			   *rstring;
-	  list_item_t	   *item;
 
 #define OBJ_PREFIX "/org/mpris/"
 
@@ -169,12 +168,10 @@ mpris_dbus_list (struct list_head *_players)
 
 	  free (path);
 
-	  item = malloc (sizeof(list_item_t));
-	  item->data = p_info;
-	  list_add_tail (&item->node, &players);
+	  list_add_tail (&p_info->node, &players);
 	}
       n++;
     }
 
-  return 1;
+  return &players;
 }
