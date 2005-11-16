@@ -65,6 +65,7 @@ AC_CONFIG_FILES([
     include/Makefile
     include/libmpris/Makefile
     include/libmpris/mpris/Makefile
+    mpris.pc
 ])
 
 AC_OUTPUT
