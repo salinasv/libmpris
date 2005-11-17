@@ -11,7 +11,7 @@
 #ifndef _LINUX_LIST_H
 #define _LINUX_LIST_H
 
-//#include <linux/stddef.h>
+/*#include <linux/stddef.h>*/
 /**
  * container_of - cast a member of a structure out to the containing structure
  *
@@ -24,10 +24,10 @@
 	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
 	(type *)( (char *)__mptr - offsetof(type,member) );})
 
-//#include <linux/prefetch.h>
+/*#include <linux/prefetch.h>*/
 static inline void prefetch(const void *x) {;}
 
-//#include <asm/system.h>
+/*#include <asm/system.h>*/
 
 /*
  * These are non-NULL pointers that will result in page faults

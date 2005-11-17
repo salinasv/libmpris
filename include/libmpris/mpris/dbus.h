@@ -1,7 +1,12 @@
 #ifndef _MPRIS_DBUS_H_
 #define _MPRIS_DBUS_H_
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include <dbus/dbus.h>
+
+#include <mpris/mpris.h>
 #include <mpris/mpris-list.h>
 
 extern DBusConnection  *conn;
@@ -9,6 +14,12 @@ extern DBusConnection  *conn;
 int
 mpris_dbus_init (void);
 
+int
+mpris_dbus_init_signals (char *interface);
+
+int
+mpris_dbus_check_signal (char *interface, char *signal, void **data);
+ 
 struct list_head*
 mpris_dbus_list_clients (void);
 

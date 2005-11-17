@@ -105,6 +105,75 @@ mpris_dbus_init (void)
     return 1;
 }
 
+int
+mpris_dbus_init_signals (char *interface)
+{
+  DBusError	    err;
+  char		   *buf;
+  size_t	    size;
+  const char	   *signal = "signal";
+
+#define _EXT "type='',interface=''"
+
+  size = strlen(signal)+strlen(interface)+strlen(_EXT)+1;
+  buf = malloc(size);
+  sprintf (buf, "type='%s',interface='%s'", signal, interface); 
+
+  dbus_error_init (&err);
+  dbus_bus_add_match(conn, buf, &err); 
+
+  dbus_connection_flush(conn);
+
+  if (dbus_error_is_set(&err)) { 
+      fprintf(stderr, "Match Error (%s)\n", err.message);
+      return 0;
+  }
+
+  return 1;
+}
+
+int
+mpris_dbus_check_signal (char *interface, char *signal, void **data)
+{
+   DBusMessage* msg;
+   DBusMessageIter args;
+
+   *data = NULL;
+
+   // non blocking read of the next available message
+   dbus_connection_flush (conn);
+   dbus_connection_read_write_dispatch (conn, 0);
+
+   try_pop:
+   msg = dbus_connection_pop_message (conn);
+
+   if (!msg)
+      {
+	*data = NULL;
+	return 0;
+      }
+
+   // check if the message is a signal from the correct interface and with the correct name
+  if (dbus_message_is_signal(msg, interface, signal))
+    {
+      // read the parameters
+      if (!dbus_message_iter_init(msg, &args))
+	{
+            fprintf(stderr, "Message has no arguments!\n"); 
+	    *data = NULL;
+	    return 0;
+	}
+      
+      dbus_message_iter_get_basic(&args, data); 
+      dbus_connection_flush (conn);
+      return 1;
+    }
+
+  dbus_connection_flush (conn);
+  return 0;
+
+}
+ 
 struct list_head*
 mpris_dbus_list_clients (void)
 {
