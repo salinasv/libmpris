@@ -138,12 +138,8 @@ mpris_dbus_check_signal (char *interface, char *signal, void **data)
    DBusMessage* msg;
    DBusMessageIter args;
 
-   *data = NULL;
-
    // non blocking read of the next available message
-   dbus_connection_flush (conn);
-   dbus_connection_read_write_dispatch (conn, 0);
-
+   dbus_connection_read_write_dispatch (conn, -1);
    try_pop:
    msg = dbus_connection_pop_message (conn);
 
@@ -165,11 +161,9 @@ mpris_dbus_check_signal (char *interface, char *signal, void **data)
 	}
       
       dbus_message_iter_get_basic(&args, data); 
-      dbus_connection_flush (conn);
       return 1;
     }
 
-  dbus_connection_flush (conn);
   return 0;
 
 }
