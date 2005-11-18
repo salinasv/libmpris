@@ -24,12 +24,12 @@ typedef enum {
 } MPRISMethodId;
 
 int
-mpris_client_invoke_server_method (MPRISClient *client, MPRISMethodId method_id, void **data);
+mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...); 
 
 int
-mpris_client_start_listen (MPRISClient *client);
+mpris_player_start_listen (MPRISPlayer *player);
 
 void
-mpris_client_stop_listen (MPRISClient *client);
+mpris_player_stop_listen (MPRISPlayer *player);
  
 #endif /* _MPRIS_CONNECTION_H_ */

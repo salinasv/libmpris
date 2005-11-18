@@ -21,14 +21,14 @@ struct _MPRISPlayerInfo {
     char *path;
 };
 
-typedef struct _MPRISClient MPRISClient;
+typedef struct _MPRISPlayer MPRISPlayer;
 
-typedef void (*MPRIS_CbSetStreamPos)   (MPRISClient *client, int32_t stream_pos);
-typedef void (*MPRIS_CbTrackChange)    (MPRISClient *client);
-typedef void (*MPRIS_CbSetPlaystatus)  (MPRISClient *client, int32_t playstatus);
-typedef void (*MPRIS_CbSetVolume)      (MPRISClient *client, int32_t volume);
+typedef void (*MPRIS_CbSetStreamPos)   (MPRISPlayer *player, int32_t stream_pos);
+typedef void (*MPRIS_CbTrackChange)    (MPRISPlayer *player);
+typedef void (*MPRIS_CbSetPlaystatus)  (MPRISPlayer *player, int32_t playstatus);
+typedef void (*MPRIS_CbSetVolume)      (MPRISPlayer *player, int32_t volume);
 
-struct _MPRISClient {
+struct _MPRISPlayer {
     MPRISPlayerInfo	  *p_info;
 
     MPRIS_CbSetStreamPos   cb_set_stream_pos;
@@ -40,16 +40,19 @@ struct _MPRISClient {
 };
 
 int
-mpris_init (void);
+mpris_client_init (void);
 
-MPRISClient*
-mpris_client_new (const char *player,
+int
+mpris_server_init (void);
+
+MPRISPlayer*
+mpris_player_new (const char *player,
 		  MPRIS_CbSetStreamPos  cb_set_stream_pos,
 		  MPRIS_CbTrackChange   cb_track_change,
 		  MPRIS_CbSetPlaystatus cb_set_playstatus,
 		  MPRIS_CbSetVolume	cb_set_volume);
 
 MPRISPlayerInfo**
-mpris_list_clients (void);
+mpris_list_players (void);
 
 #endif /* _MPRIS_H_ */

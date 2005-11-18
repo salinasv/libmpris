@@ -15,10 +15,10 @@ int
 mpris_dbus_init (void);
 
 struct list_head*
-mpris_dbus_list_clients (void);
+mpris_dbus_list_players (void);
 
 MPRISPlayerInfo*
-mpris_dbus_get_p_info (const char *player);
+mpris_dbus_get_player_info (const char *player);
 
 /* Auxilliary DBus stuff */
 int

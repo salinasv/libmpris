@@ -107,7 +107,7 @@ mpris_dbus_init (void)
 }
 
 MPRISPlayerInfo*
-mpris_dbus_get_p_info (const char *player)
+mpris_dbus_get_player_info (const char *player)
 {
   MPRISPlayerInfo  *p_info = malloc (sizeof(MPRISPlayerInfo));
   DBusMessage	   *msg;
@@ -156,7 +156,7 @@ mpris_dbus_get_p_info (const char *player)
 }
 
 struct list_head*
-mpris_dbus_list_clients (void)
+mpris_dbus_list_players (void)
 {
   DBusMessage	   *msg;
   DBusMessageIter   args;
@@ -193,7 +193,7 @@ mpris_dbus_list_clients (void)
 	  rstring = rindex (names[n], '.');
 	  rstring++;
 
-	  p_info = mpris_dbus_get_p_info (rstring);
+	  p_info = mpris_dbus_get_player_info (rstring);
 	  list_add_tail (&p_info->node, &players);
 	}
 
