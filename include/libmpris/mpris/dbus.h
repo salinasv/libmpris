@@ -14,14 +14,11 @@ extern DBusConnection  *conn;
 int
 mpris_dbus_init (void);
 
-int
-mpris_dbus_init_signals (char *interface);
-
-int
-mpris_dbus_check_signal (char *interface, char *signal, void **data);
- 
 struct list_head*
 mpris_dbus_list_clients (void);
+
+MPRISPlayerInfo*
+mpris_dbus_get_p_info (const char *player);
 
 /* Auxilliary DBus stuff */
 int

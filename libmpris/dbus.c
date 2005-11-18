@@ -4,6 +4,7 @@
 #include <string.h>
 #include <strings.h>
 #include <stddef.h>
+#include <pthread.h>
 
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
@@ -105,73 +106,58 @@ mpris_dbus_init (void)
     return 1;
 }
 
-int
-mpris_dbus_init_signals (char *interface)
+MPRISPlayerInfo*
+mpris_dbus_get_p_info (const char *player)
 {
-  DBusError	    err;
-  char		   *buf;
-  size_t	    size;
-  const char	   *signal = "signal";
+  MPRISPlayerInfo  *p_info = malloc (sizeof(MPRISPlayerInfo));
+  DBusMessage	   *msg;
+  DBusMessageIter   args;
+  char		   *path = NULL,
+		   *iface = NULL;
 
-#define _EXT "type='',interface=''"
+#define OBJ_PREFIX "/org/mpris/"
+#define IFACE_PREFIX "org.mpris."
 
-  size = strlen(signal)+strlen(interface)+strlen(_EXT)+1;
-  buf = malloc(size);
-  sprintf (buf, "type='%s',interface='%s'", signal, interface); 
+  path = malloc (strlen(player) + strlen("/org/mpris//SystemControl")+1);
+  memcpy (path, OBJ_PREFIX, strlen(OBJ_PREFIX)); 
+  memcpy (path+strlen(OBJ_PREFIX), player, strlen(player));
+  memcpy (path+strlen(OBJ_PREFIX)+strlen(player), "/SystemControl", strlen("/SystemControl")+1);
 
-  dbus_error_init (&err);
-  dbus_bus_add_match(conn, buf, &err); 
+  iface = malloc (strlen(player) + strlen(IFACE_PREFIX)+1);
+  memcpy (iface, IFACE_PREFIX, strlen(IFACE_PREFIX)); 
+  memcpy (iface+strlen(IFACE_PREFIX), player, strlen(player));
 
-  dbus_connection_flush(conn);
+  dbus_message_call_simple (conn,
+			    &msg,
+			    iface, 
+			    path, 
+			    iface, 
+			    "Identity");
 
-  if (dbus_error_is_set(&err)) { 
-      fprintf(stderr, "Match Error (%s)\n", err.message);
-      return 0;
-  }
-
-  return 1;
-}
-
-int
-mpris_dbus_check_signal (char *interface, char *signal, void **data)
-{
-   DBusMessage* msg;
-   DBusMessageIter args;
-
-   // non blocking read of the next available message
-   dbus_connection_read_write_dispatch (conn, -1);
-   try_pop:
-   msg = dbus_connection_pop_message (conn);
-
-   if (!msg)
-      {
-	*data = NULL;
-	return 0;
-      }
-
-   // check if the message is a signal from the correct interface and with the correct name
-  if (dbus_message_is_signal(msg, interface, signal))
+  if (dbus_message_iter_init(msg, &args))
     {
-      // read the parameters
-      if (!dbus_message_iter_init(msg, &args))
-	{
-            fprintf(stderr, "Message has no arguments!\n"); 
-	    *data = NULL;
-	    return 0;
-	}
-      
-      dbus_message_iter_get_basic(&args, data); 
-      return 1;
+      dbus_message_iter_get_basic (&args, &(p_info->name));
+    }
+  else
+    {
+      fprintf (stderr, "Couldn't acquire MPRIS remote Identity!");
+      p_info->name = NULL;
     }
 
-  return 0;
+    dbus_message_unref(msg);   
 
+    p_info->interface = (char*)strndup (iface, strlen(iface));
+    p_info->path = (char*)strndup (path, strlen(path));
+    p_info->suffix = (char*)strndup (player, strlen(player));
+
+    free (path);
+
+    return p_info;
 }
- 
+
 struct list_head*
 mpris_dbus_list_clients (void)
 {
-  DBusError	    err;
   DBusMessage	   *msg;
   DBusMessageIter   args;
   char		  **names = NULL;
@@ -201,46 +187,16 @@ mpris_dbus_list_clients (void)
     {
       if (!strncasecmp (MPRIS_INTERFACE_PREFIX, names[n], strlen(MPRIS_INTERFACE_PREFIX)))
 	{
-	  MPRISPlayerInfo  *p_info = malloc (sizeof(MPRISPlayerInfo));
-	  char		   *path,
-			   *rstring;
-
-#define OBJ_PREFIX "/org/mpris/"
+	  MPRISPlayerInfo *p_info = NULL;
+	  char *rstring;
 
 	  rstring = rindex (names[n], '.');
 	  rstring++;
 
-	  path = malloc (strlen(rstring) + strlen("/org/mpris//SystemControl")+1);
-	  memcpy (path, OBJ_PREFIX, strlen(OBJ_PREFIX)); 
-	  memcpy (path+strlen(OBJ_PREFIX), rstring, strlen(rstring));
-	  memcpy (path+strlen(OBJ_PREFIX)+strlen(rstring), "/SystemControl", strlen("/SystemControl")+1);
-
-	  dbus_message_call_simple (conn,
-			    &msg,
-			    names[n], 
-			    path, 
-			    names[n], 
-			    "Identity");
-
-	  if (dbus_message_iter_init(msg, &args))
-	    {
-	      dbus_message_iter_get_basic (&args, &(p_info->name));
-	    }
-	  else
-	    {
-	      fprintf (stderr, "Couldn't acquire MPRIS remote Identity!");
-	      p_info->name = NULL;
-	    }
-
-	  dbus_message_unref(msg);   
-
-	  p_info->interface = strndup (names[n], strlen(path));
-	  p_info->path = strndup (path, strlen(path));
-
-	  free (path);
-
+	  p_info = mpris_dbus_get_p_info (rstring);
 	  list_add_tail (&p_info->node, &players);
 	}
+
       n++;
     }
 

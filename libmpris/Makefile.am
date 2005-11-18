@@ -7,7 +7,7 @@ INCLUDES = \
 	    -D__USE_GNU
 
 libmpris_la_LDFLAGS = -export-dynamic 
-libmpris_la_LIBADD = $(DBUS_LIBS)
+libmpris_la_LIBADD = $(DBUS_LIBS) -lpthread
 
 libmpris_la_SOURCES = \
     connection.c  \
