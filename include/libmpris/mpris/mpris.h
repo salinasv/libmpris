@@ -3,6 +3,14 @@
 
 #include <mpris/mpris-list.h>
 
+typedef enum {
+    PLAYSTATUS_STOPPED = 1 << 1,
+    PLAYSTATUS_PLAYING = 1 << 2,
+    PLAYSTATUS_PAUSED  = 1 << 3,
+    PLAYSTATUS_SEEKING = 1 << 4,
+    PLAYSTATUS_WAITING = 1 << 5
+} MPRISPlaystatus;
+
 typedef struct _MPRISPlayerInfo MPRISPlayerInfo;
 struct _MPRISPlayerInfo {
     struct list_head node;

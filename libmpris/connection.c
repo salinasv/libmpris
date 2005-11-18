@@ -31,7 +31,7 @@ dbus_msg_poll_thread (MPRISClient *client)
 	pthread_exit (NULL);
 
 
-      dbus_connection_read_write(conn, 200);
+      dbus_connection_read_write(conn, 0);
 
       // non blocking read of the next available message
       while (NULL != (msg = dbus_connection_pop_message(conn)))
@@ -134,14 +134,13 @@ mpris_client_start_listen (MPRISClient *client)
   }
 
   pthread_create (&thread, NULL, dbus_msg_poll_thread, client);
-  pthread_join (thread, &t_rv);
 
   return 1;
 }
 
 
 int
-mpris_client_invoke_method (MPRISClient *client, MPRISMethodId method_id, void **data)
+mpris_client_invoke_server_method (MPRISClient *client, MPRISMethodId method_id, void **data)
 {
      switch (method_id) 
       {

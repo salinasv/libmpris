@@ -24,7 +24,7 @@ typedef enum {
 } MPRISMethodId;
 
 int
-mpris_client_invoke_method (MPRISClient *client, MPRISMethodId method_id, void **data);
+mpris_client_invoke_server_method (MPRISClient *client, MPRISMethodId method_id, void **data);
 
 int
 mpris_client_start_listen (MPRISClient *client);
