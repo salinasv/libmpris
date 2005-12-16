@@ -37,6 +37,8 @@ struct _MPRISPlayer {
     MPRIS_CbSetVolume	   cb_set_volume;
 
     int			   t_exit;
+
+    void*		   user_data;
 };
 
 int

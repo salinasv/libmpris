@@ -31,7 +31,7 @@ dbus_msg_poll_thread (MPRISPlayer *player)
 	pthread_exit (NULL);
 
 
-      dbus_connection_read_write(conn, 0);
+      dbus_connection_read_write(conn, 200);
 
       // non blocking read of the next available message
       while (NULL != (msg = dbus_connection_pop_message(conn)))
@@ -158,7 +158,7 @@ mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...)
 					    method_names[method_id]);
 
 	      /* send message and get a handle for a reply*/
-	     if (!dbus_connection_send_with_reply (conn, msg, &pending, -1)) /* -1 is default timeout*/
+	     if (!dbus_connection_send_with_reply (conn, msg, &pending, 0)) /* -1 is default timeout*/
 	       {
 		  fprintf(stderr, "Out Of Memory!\n"); 
 		  return 0;
@@ -172,8 +172,6 @@ mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...)
 
 	      /* free message*/
 	      dbus_message_unref(msg);
-	      dbus_connection_flush (conn);
-
 	      return 1;
 	  }
 	  break;
