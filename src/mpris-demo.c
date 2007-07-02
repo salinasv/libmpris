@@ -13,9 +13,11 @@
 int
 main (int n_args, char **args)
 {
+  MPRISPlayer * player;
   mpris_client_init ();
 
-  MPRISPlayer * player;
+  if (n_args != 2)
+	  return EXIT_FAILURE;
   player = mpris_player_new (args[1]);
 
   fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n", args[1], MPRIS_PLAYER_NAME(player)); 

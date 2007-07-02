@@ -85,13 +85,13 @@ mpris_dbus_get_player_info (const char * player)
     
   if ((out == NULL) || dbus_error_is_set (&err))
   {
-    fprintf (stderr, "%s:%d: Message call failed!", __FILE__, __LINE__);
+    fprintf (stderr, "%s:%d: Message call failed!\n", __FILE__, __LINE__);
     return NULL;
   }
 
   if (!dbus_message_get_args (out, &err, DBUS_TYPE_STRING, &p_info->name, DBUS_TYPE_INVALID))
   {
-    fprintf (stderr, "%s:%d: Couldn't get args from message!", __FILE__, __LINE__);
+    fprintf (stderr, "%s:%d: Couldn't get args from message!\n", __FILE__, __LINE__);
     return NULL;
   }
 
@@ -119,7 +119,7 @@ mpris_dbus_list_players (void)
     
   if ((out == NULL) || dbus_error_is_set (&err))
   {
-    fprintf (stderr, "%s:%d: Message call failed!", __FILE__, __LINE__);
+    fprintf (stderr, "%s:%d: Message call failed!\n", __FILE__, __LINE__);
     return NULL;
   }
 
@@ -127,7 +127,7 @@ mpris_dbus_list_players (void)
   DBusMessageIter iter;
   if (!dbus_message_iter_init (out, &iter))
   {
-    fprintf (stderr, "%s:%d: Couldn't init message iter!", __FILE__, __LINE__);
+    fprintf (stderr, "%s:%d: Couldn't init message iter!\n", __FILE__, __LINE__);
     return NULL;
   }
 

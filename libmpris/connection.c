@@ -36,7 +36,6 @@ mpris_player_start_listen (MPRISPlayer *player)
         dbus_error_init (&err);
 
 	dbus_threads_init_default ();
-	pthread_mutex_init (player->lock, NULL);
 	player->thread_exit = 0;
         dbus_bus_add_match (conn, MPRIS_MATCH_RULE, &err);
         dbus_connection_add_filter (conn,
@@ -57,7 +56,6 @@ mpris_player_stop_listen (MPRISPlayer *player)
 	player->thread_exit = 1;
 	dbus_connection_remove_filter (conn, handle_signals, (void*) player);
 	dbus_bus_remove_match (conn, MPRIS_MATCH_RULE, &err);
-	pthread_mutex_destroy (player->lock);
 	pthread_join (*player->listen_thread, NULL);
 	dbus_error_free (&err);
 }

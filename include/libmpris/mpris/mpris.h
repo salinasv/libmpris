@@ -1,7 +1,7 @@
 #ifndef _MPRIS_H_
 #define _MPRIS_H_
 
-#include <dbus/dbus.h>
+#include <pthread.h>
 #include <mpris/mpris-list.h>
 
 typedef struct _MPRISPlayerInfo
@@ -23,7 +23,8 @@ typedef struct _MPRISPlayer
 
 } MPRISPlayer;
 
-#define MPRIS_PLAYER_NAME(x) (x->p_info->name)
+#define MPRIS_PLAYER_NAME(player) \
+        player->p_info ? (player->p_info->name) : "NOT CONNECTED"
 #define MPRIS_PLAYER_LOCK(player) pthread_mutex_lock (player->lock)
 
 int
