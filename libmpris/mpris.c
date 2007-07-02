@@ -28,6 +28,8 @@ mpris_player_new (const char * p_id)
   memset (player, 0x00, sizeof(MPRISPlayer));
 
   player->p_info = mpris_dbus_get_player_info (p_id);
+  player->listen_thread = (pthread_t*) malloc (sizeof (pthread_t));
+  player->lock = (pthread_mutex_t*) malloc (sizeof (pthread_mutex_t));
   return player;
 }
 
@@ -36,12 +38,14 @@ mpris_player_free (MPRISPlayer * player)
 {
   /* TODO: If we keep more stuff in here than just strings, disconnect, etc... */
 
-  /*
-  free (player->p_info->suffix);
-  free (player->p_info->name);
-  free (player->p_info);
-  free (player);
-  */
+  if (player->listen_thread) free (player->listen_thread);
+  if (player->lock) free (player->lock);
+
+  if (player->p_info->suffix) free (player->p_info->suffix);
+  if (player->p_info->name) free (player->p_info->name);
+  if (player->p_info) free (player->p_info);
+  if (player) free (player);
+
 }
 
 MPRISPlayerInfo**
