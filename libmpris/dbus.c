@@ -1,3 +1,7 @@
+//
+// LibMPRIS (C) 2007 deadchip, mirsal
+//
+
 #include <dbus/dbus.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,18 +14,19 @@
 #include <mpris/dbus.h>
 #include <mpris/mpris-list.h>
 
-#define MPRIS_INTERFACE_PREFIX	"org.mpris"
+#define MPRIS_ROOT_PATH         "/"
+#define MPRIS_BUS_NAME_PREFIX   "org.mpris."
+#define MPRIS_FDO_IFACE_NAME    "org.freedesktop.MediaPlayer"
 
-DBusConnection  *conn;
+DBusConnection * conn = NULL;
 
 struct list_head players;
-
 LIST_HEAD (players);
 
 static char**
-demarshal_strv (DBusMessageIter	        *iter)
+demarshal_strv (DBusMessageIter	* iter)
 {
-  DBusMessageIter subiter;
+  DBusMessageIter iter2;
   char **ret;
   int current_type;
   int len;
@@ -29,176 +34,128 @@ demarshal_strv (DBusMessageIter	        *iter)
 
   current_type = dbus_message_iter_get_arg_type (iter);
   if (current_type != DBUS_TYPE_ARRAY)
-      return NULL;
+    return NULL;
 
-  dbus_message_iter_recurse (iter, &subiter);
+  dbus_message_iter_recurse (iter, &iter2);
+  current_type = dbus_message_iter_get_arg_type (&iter2);
 
-  current_type = dbus_message_iter_get_arg_type (&subiter);
-  if (current_type != DBUS_TYPE_INVALID
-      && current_type != DBUS_TYPE_STRING)
-      return NULL;
+  if (current_type != DBUS_TYPE_INVALID && current_type != DBUS_TYPE_STRING)
+    return NULL;
 
-  len = dbus_message_iter_get_array_len (&subiter);
+  len = dbus_message_iter_get_array_len (&iter2);
   ret = malloc (sizeof (char *) * (len + 1));
   
   i = 0;
-  while ((current_type = dbus_message_iter_get_arg_type (&subiter)) != DBUS_TYPE_INVALID)
-    {
-      dbus_message_iter_get_basic (&subiter, &(ret[i]));
-      ret[i] = strndup (ret[i], strlen(ret[i]));
-
-      dbus_message_iter_next (&subiter);
-      i++;
-    }
-  ret[i] = NULL; 
-  
+  while ((current_type = dbus_message_iter_get_arg_type (&iter2)) != DBUS_TYPE_INVALID)
+  {
+    const char * aux;
+    dbus_message_iter_get_basic (&iter2, &aux); 
+    ret[i] = strdup (aux);
+    dbus_message_iter_next (&iter2);
+    i++;
+  }
+  ret[i] = NULL; /* terminate StrV with NULL */
   return ret;
-}
-
-int
-dbus_message_call_simple (DBusConnection *conn,
-			  DBusMessage **msg,
-			  const char *target,
-			  const char *object,
-			  const char *iface,
-			  const char *method)
-{
-  DBusPendingCall  *pending;
-
-  *msg = dbus_message_new_method_call(target,
-				     object,  
-				     iface,
-			             method);
-
-  if (!*msg)
-    return 0;
-
-  if (!dbus_connection_send_with_reply (conn, *msg, &pending, -1)) // -1 is default timeout
-    return 0;
-
-  if (!pending)
-    return 0;
-
-  dbus_connection_flush(conn);
-  dbus_message_unref(*msg);
-  dbus_pending_call_block(pending);
-  *msg = dbus_pending_call_steal_reply(pending);
-
-  if (!*msg)
-    return 0;
-
-  dbus_pending_call_unref(pending);
-
-  return 1;
 }
 
 int
 mpris_dbus_init (void)
 {
-  DBusError	    err;
-
+  DBusError err;
   dbus_error_init (&err);
-  conn = dbus_bus_get (DBUS_BUS_SESSION, &err);
 
-  if (!conn)
-    return 0;
-  else
-    return 1;
+  conn = dbus_bus_get (DBUS_BUS_SESSION, &err);
+  return (conn != NULL);
 }
 
 MPRISPlayerInfo*
-mpris_dbus_get_player_info (const char *player)
+mpris_dbus_get_player_info (const char * player)
 {
-  MPRISPlayerInfo  *p_info = malloc (sizeof(MPRISPlayerInfo));
-  DBusMessage	   *msg;
-  DBusMessageIter   args;
-  char		   *path = NULL,
-		   *iface = NULL;
+  MPRISPlayerInfo   * p_info = malloc (sizeof(MPRISPlayerInfo));
+  DBusMessage	      * in = NULL, * out = NULL; /* in as in "into DBus" and out as in "from DBus" */
 
-#define OBJ_PREFIX "/org/mpris/"
-#define IFACE_PREFIX "org.mpris."
+  char name[1024];
+  sprintf (name, "org.mpris.%s", player);
 
-  path = malloc (strlen(player) + strlen("/org/mpris//SystemControl")+1);
-  memcpy (path, OBJ_PREFIX, strlen(OBJ_PREFIX)); 
-  memcpy (path+strlen(OBJ_PREFIX), player, strlen(player));
-  memcpy (path+strlen(OBJ_PREFIX)+strlen(player), "/SystemControl", strlen("/SystemControl")+1);
+  DBusError err;
+  dbus_error_init (&err);
 
-  iface = malloc (strlen(player) + strlen(IFACE_PREFIX)+1);
-  memcpy (iface, IFACE_PREFIX, strlen(IFACE_PREFIX)); 
-  memcpy (iface+strlen(IFACE_PREFIX), player, strlen(player));
+  in = dbus_message_new_method_call (name, MPRIS_ROOT_PATH, MPRIS_FDO_IFACE_NAME, "Identity");
+  out = dbus_connection_send_with_reply_and_block (conn, in, 500 /* let's wait half a second max */, &err);
+    
+  if ((out == NULL) || dbus_error_is_set (&err))
+  {
+    fprintf (stderr, "%s:%d: Message call failed!", __FILE__, __LINE__);
+    return NULL;
+  }
 
-  dbus_message_call_simple (conn,
-			    &msg,
-			    iface, 
-			    path, 
-			    iface, 
-			    "Identity");
+  if (!dbus_message_get_args (out, &err, DBUS_TYPE_STRING, &p_info->name, DBUS_TYPE_INVALID))
+  {
+    fprintf (stderr, "%s:%d: Couldn't get args from message!", __FILE__, __LINE__);
+    return NULL;
+  }
 
-  if (dbus_message_iter_init(msg, &args))
-    {
-      dbus_message_iter_get_basic (&args, &(p_info->name));
-    }
-  else
-    {
-      fprintf (stderr, "Couldn't acquire MPRIS remote Identity!");
-      p_info->name = NULL;
-    }
+  p_info->suffix = strdup (player); 
 
-    dbus_message_unref(msg);   
+  dbus_message_unref (in);   
+  dbus_message_unref (out);   
 
-    p_info->interface = (char*)strndup (iface, strlen(iface));
-    p_info->path = (char*)strndup (path, strlen(path));
-    p_info->suffix = (char*)strndup (player, strlen(player));
-
-    free (path);
-
-    return p_info;
+  return p_info;
 }
 
 struct list_head*
 mpris_dbus_list_players (void)
 {
-  DBusMessage	   *msg;
-  DBusMessageIter   args;
-  char		  **names = NULL;
-  int		    n = 0;
 
-  dbus_message_call_simple (conn,
-			    &msg,
-			    "org.freedesktop.DBus",
-			    "/org/freedesktop/DBus",
-			    "org.freedesktop.DBus",
-			    "ListNames");
+  DBusMessage	 * in = NULL, * out = NULL; /* in as in "into DBus" and out as in "from DBus" */
 
-  if (!dbus_message_iter_init(msg, &args))
-      return NULL;
+  DBusError err;
+  dbus_error_init (&err);
 
-  else if (DBUS_TYPE_ARRAY == dbus_message_iter_get_arg_type(&args)) 
-      names = demarshal_strv (&args);
+  in = dbus_message_new_method_call ("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "ListNames");
+  dbus_message_unref (in);   
+
+  out = dbus_connection_send_with_reply_and_block (conn, in, 500 /* let's wait half a second max */, &err);
+    
+  if ((out == NULL) || dbus_error_is_set (&err))
+  {
+    fprintf (stderr, "%s:%d: Message call failed!", __FILE__, __LINE__);
+    return NULL;
+  }
+
+
+  DBusMessageIter iter;
+  if (!dbus_message_iter_init (out, &iter))
+  {
+    fprintf (stderr, "%s:%d: Couldn't init message iter!", __FILE__, __LINE__);
+    return NULL;
+  }
+
+  char ** names = NULL;
+  if (DBUS_TYPE_ARRAY == dbus_message_iter_get_arg_type (&iter)) 
+  {
+    names = demarshal_strv (&iter);
+  }
   else
-    {
-      dbus_message_unref(msg);   
-      return NULL;
-    }
+  {
+    dbus_message_unref (out);   
+    return NULL;
+  }
 
-  dbus_message_unref(msg);   
-
+  int n = 0;
   while (names[n])
-    {
-      if (!strncasecmp (MPRIS_INTERFACE_PREFIX, names[n], strlen(MPRIS_INTERFACE_PREFIX)))
-	{
-	  MPRISPlayerInfo *p_info = NULL;
-	  char *rstring;
+  {
+    if (!strncasecmp (MPRIS_BUS_NAME_PREFIX, names[n], strlen (MPRIS_BUS_NAME_PREFIX)))
+	  {
+	    MPRISPlayerInfo * p_info = NULL;
+	    char * rstring = rindex (names[n], '.');
+	    rstring++;
+	    p_info = mpris_dbus_get_player_info (rstring);
+	    list_add_tail (&p_info->node, &players);
+	  }
+    ++n;
+  }
 
-	  rstring = rindex (names[n], '.');
-	  rstring++;
-
-	  p_info = mpris_dbus_get_player_info (rstring);
-	  list_add_tail (&p_info->node, &players);
-	}
-
-      n++;
-    }
-
+  dbus_message_unref (out);   
   return &players;
 }

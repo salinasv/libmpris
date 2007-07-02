@@ -1,3 +1,8 @@
+//
+// LibMPRIS (C) 2007 deadchip, mirsal
+//
+
+#include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <mpris/mpris.h>
@@ -17,50 +22,49 @@ mpris_server_init (void)
 }
 
 MPRISPlayer*
-mpris_player_new (const char *player,
-		  MPRIS_CbSetStreamPos  cb_set_stream_pos,
-		  MPRIS_CbTrackChange   cb_track_change,
-		  MPRIS_CbSetPlaystatus cb_set_playstatus,
-		  MPRIS_CbSetVolume	cb_set_volume)
+mpris_player_new (const char * p_id)
 {
-  MPRISPlayer *_player = malloc (sizeof(MPRISPlayer));
-  memset (_player, 0x00, sizeof(MPRISPlayer));
+  MPRISPlayer * player = malloc (sizeof(MPRISPlayer));
+  memset (player, 0x00, sizeof(MPRISPlayer));
 
-  _player->p_info = mpris_dbus_get_player_info (player);
-  _player->cb_set_stream_pos = cb_set_stream_pos;
-  _player->cb_track_change = cb_track_change;
-  _player->cb_set_playstatus = cb_set_playstatus;
-  _player->cb_set_volume = cb_set_volume;
+  player->p_info = mpris_dbus_get_player_info (p_id);
+  return player;
+}
 
-  _player->t_exit = 0;
+void
+mpris_player_free (MPRISPlayer * player)
+{
+  /* TODO: If we keep more stuff in here than just strings, disconnect, etc... */
 
-  return _player;
+  /*
+  free (player->p_info->suffix);
+  free (player->p_info->name);
+  free (player->p_info);
+  free (player);
+  */
 }
 
 MPRISPlayerInfo**
 mpris_list_players (void)
 {
-  struct list_head *head;
-  MPRISPlayerInfo **list;
-  MPRISPlayerInfo *item;
-  int count = 0;
+  struct list_head*head;
+  MPRISPlayerInfo**list;
+  MPRISPlayerInfo*item;
 
+  int n = 0;
   head = mpris_dbus_list_players ();
 
   list_for_each_entry (item, head, node)
-    {
-      count++;
-    }
+  {
+    n++;
+  }
 
-  list = malloc ((sizeof (MPRISPlayerInfo*) * count) + 1);
-  count = 0;
-
-  list_for_each_entry (item, head, node)
-    {
-      list[count++] = item;
-    }
-  list[count] = NULL;
-  
+  list = malloc ((sizeof (MPRISPlayerInfo*) * n) + 1);
+  n = 0;
+  list_for_each_entry(item, head, node)
+  {
+    list[n++] = item;
+  }
+  list[n] = NULL; /* terminate list with NULL */
   return list;
 }
-
