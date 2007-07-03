@@ -90,17 +90,21 @@ mpris_dbus_get_player_info (const char * player)
     return NULL;
   }
 
+  const char * p_name;
+
   if (!dbus_message_get_args (out, &err, DBUS_TYPE_STRING, 
-                          &p_info->name, DBUS_TYPE_INVALID))
+                          &p_name, DBUS_TYPE_INVALID))
   {
     fprintf (stderr, "%s:%d: Couldn't get args from message!\n", 
                     __FILE__, __LINE__);
     free (name);
     return NULL;
   }
-  free (name);
 
+  p_info->name = strdup (p_name);
   p_info->suffix = strdup (player); 
+
+  free (name);
 
   dbus_message_unref (in);   
   dbus_message_unref (out);   
