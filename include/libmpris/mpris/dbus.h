@@ -7,14 +7,14 @@
 #include <dbus/dbus.h>
 
 #include <mpris/mpris.h>
-#include <mpris/mpris-list.h>
+#include <mpris/list.h>
 
 extern DBusConnection  *conn;
 
 int
 mpris_dbus_init (void);
 
-struct list_head*
+MPRISList*
 mpris_dbus_list_players (void);
 
 MPRISPlayerInfo*

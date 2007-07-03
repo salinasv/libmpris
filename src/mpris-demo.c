@@ -8,7 +8,6 @@
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
 #include <mpris/connection.h>
-#include <mpris/mpris-list.h>
 
 static int
 list_clients (void)

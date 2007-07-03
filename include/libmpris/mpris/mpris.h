@@ -2,13 +2,13 @@
 #define _MPRIS_H_
 
 #include <pthread.h>
-#include <mpris/mpris-list.h>
+#include <mpris/list.h>
 
 typedef struct _MPRISCallbackFuncs MPRISCallbackFuncs;
 
 typedef struct _MPRISPlayerInfo
 {
-  struct list_head node;
+  MPRISList * node;
 
   char *suffix;
   char *name;

@@ -9,7 +9,7 @@
 
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
-#include <mpris/mpris-list.h>
+#include <mpris/list.h>
 
 int
 mpris_client_init (void)
@@ -53,30 +53,28 @@ mpris_player_free (MPRISPlayer * player)
   if (player->p_info->name) free (player->p_info->name);
   if (player->p_info) free (player->p_info);
   if (player) free (player);
-
 }
+
+static void
+fill_info_array (MPRISList* item, void* user_data, int pos)
+{
+        MPRISPlayerInfo** info_array = (MPRISPlayerInfo**) user_data;
+        info_array[pos] = (MPRISPlayerInfo*) item->data;
+        printf ("Pulled %s - %s from the linked list\n", 
+                        info_array[pos]->suffix, info_array[pos]->name);
+} 
 
 MPRISPlayerInfo**
 mpris_list_players (void)
 {
-  struct list_head*head;
-  MPRISPlayerInfo**list;
-  MPRISPlayerInfo*item;
+  MPRISList *head;
+  MPRISPlayerInfo** list;
+  MPRISPlayerInfo* item;
+  int last_pos = 0;
 
-  int n = 0;
   head = mpris_dbus_list_players ();
-
-  list_for_each_entry (item, head, node)
-  {
-    n++;
-  }
-
-  list = malloc ((sizeof (MPRISPlayerInfo*) * n) + 1);
-  n = 0;
-  list_for_each_entry(item, head, node)
-  {
-    list[n++] = item;
-  }
-  list[n] = NULL; /* terminate list with NULL */
+  list = malloc ((sizeof (MPRISPlayerInfo*) * mpris_list_size (head)) + 1);
+  last_pos = mpris_list_foreach (head, fill_info_array, (void*) list);
+  list[last_pos] = NULL; /* terminate list with NULL */
   return list;
 }

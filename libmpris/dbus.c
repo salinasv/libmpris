@@ -12,16 +12,13 @@
 
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
-#include <mpris/mpris-list.h>
+#include <mpris/list.h>
 
 #define MPRIS_ROOT_PATH         "/"
 #define MPRIS_BUS_NAME_PREFIX   "org.mpris."
 #define MPRIS_FDO_IFACE_NAME    "org.freedesktop.MediaPlayer"
 
 DBusConnection * conn = NULL;
-
-struct list_head players;
-LIST_HEAD (players);
 
 static char**
 demarshal_strv (DBusMessageIter	* iter)
@@ -111,9 +108,10 @@ mpris_dbus_get_player_info (const char * player)
   return p_info;
 }
 
-struct list_head*
+MPRISList*
 mpris_dbus_list_players (void)
 {
+  MPRISList* players = mpris_list_new ();
 
   DBusMessage	 * in = NULL, * out = NULL; /* in as in "into DBus" and out as in "from DBus" */
 
@@ -163,11 +161,14 @@ mpris_dbus_list_players (void)
 	    char * rstring = rindex (names[n], '.');
 	    rstring++;
 	    p_info = mpris_dbus_get_player_info (rstring);
-	    list_add_tail (&p_info->node, &players);
+            printf ("Adding %s - %s to the linked list\n", 
+                            p_info->suffix, p_info->name);
+	    mpris_list_append (players, p_info);
+            p_info->node = mpris_list_tail (players);
 	  }
     ++n;
   }
 
   dbus_message_unref (out);   
-  return &players;
+  return players;
 }
