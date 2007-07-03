@@ -15,7 +15,6 @@ struct _MPRISList
   void* data;
   MPRISList * next;
   MPRISList * prev;
-
 };
 
 typedef void ( * MPRISListDataDestroy ) (void*);
@@ -62,8 +61,8 @@ mpris_list_prepend (MPRISList * list, void* data);
 void
 mpris_list_remove (MPRISList * list, MPRISListDataDestroy destroy);
 
-/* Calls ForeachFunc on each element of the list */
-void
+/* Calls ForeachFunc on each element of the list, returns the number of iterations */
+int
 mpris_list_foreach (MPRISList * list, MPRISListForeachFunc foreach_func, void * data);
 
 /* Calls FindFunc which can then inspect the item and return a value != 0 whether to stop iterating */

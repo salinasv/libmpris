@@ -147,19 +147,23 @@ mpris_list_remove (MPRISList * list, MPRISListDataDestroy destroy)
   next->prev = prev;
 }
 
-void
+int
 mpris_list_foreach (MPRISList * list, MPRISListForeachFunc foreach_func, void * data)
 {
   MPRISList * head = mpris_list_head (list); 
+  int n_iterations = 0;
 
   while (1)
   { 
     foreach_func (head, data); 
+    ++n_iterations;
     if (!head->next)
       break;
     else
       head = head->next;
   }
+
+  return n_iterations;
 }
 
 MPRISList*
