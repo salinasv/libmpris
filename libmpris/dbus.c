@@ -72,28 +72,36 @@ MPRISPlayerInfo*
 mpris_dbus_get_player_info (const char * player)
 {
   MPRISPlayerInfo   * p_info = malloc (sizeof(MPRISPlayerInfo));
-  DBusMessage	      * in = NULL, * out = NULL; /* in as in "into DBus" and out as in "from DBus" */
+  DBusMessage	      * in = NULL, * out = NULL; /* in as in "into DBus" 
+                                                    and out as in "from DBus" */
 
-  char name[1024];
+  char* name = (char*) malloc (strlen ("org.mpris.") + strlen (player));
   sprintf (name, "org.mpris.%s", player);
 
   DBusError err;
   dbus_error_init (&err);
 
-  in = dbus_message_new_method_call (name, MPRIS_ROOT_PATH, MPRIS_FDO_IFACE_NAME, "Identity");
-  out = dbus_connection_send_with_reply_and_block (conn, in, 500 /* let's wait half a second max */, &err);
+  in = dbus_message_new_method_call (name, MPRIS_ROOT_PATH, 
+                  MPRIS_FDO_IFACE_NAME, "Identity");
+  out = dbus_connection_send_with_reply_and_block (conn, in, 
+                  500 /* let's wait half a second max */, &err);
     
   if ((out == NULL) || dbus_error_is_set (&err))
   {
     fprintf (stderr, "%s:%d: Message call failed!\n", __FILE__, __LINE__);
+    free (name);
     return NULL;
   }
 
-  if (!dbus_message_get_args (out, &err, DBUS_TYPE_STRING, &p_info->name, DBUS_TYPE_INVALID))
+  if (!dbus_message_get_args (out, &err, DBUS_TYPE_STRING, 
+                          &p_info->name, DBUS_TYPE_INVALID))
   {
-    fprintf (stderr, "%s:%d: Couldn't get args from message!\n", __FILE__, __LINE__);
+    fprintf (stderr, "%s:%d: Couldn't get args from message!\n", 
+                    __FILE__, __LINE__);
+    free (name);
     return NULL;
   }
+  free (name);
 
   p_info->suffix = strdup (player); 
 

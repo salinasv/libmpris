@@ -23,6 +23,7 @@ list_clients (void)
                 ++i;
         }
 
+        free (p_list);
         return 0;
 }
 int
