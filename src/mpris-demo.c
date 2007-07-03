@@ -14,7 +14,8 @@ list_clients (void)
 {
         MPRISPlayerInfo** p_list = NULL;
         int i = 0;
-        p_list = mpris_list_players ();
+        if (!(p_list = mpris_list_players ()))
+                return EXIT_FAILURE;
         while (p_list[i])
         {
                 printf ("Player: '%s' with identity: '%s'\n", 

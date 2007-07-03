@@ -60,8 +60,6 @@ fill_info_array (MPRISList* item, void* user_data, int pos)
 {
         MPRISPlayerInfo** info_array = (MPRISPlayerInfo**) user_data;
         info_array[pos] = (MPRISPlayerInfo*) item->data;
-        printf ("Pulled %s - %s from the linked list\n", 
-                        info_array[pos]->suffix, info_array[pos]->name);
 } 
 
 MPRISPlayerInfo**
@@ -70,10 +68,12 @@ mpris_list_players (void)
   MPRISList *head;
   MPRISPlayerInfo** list;
   MPRISPlayerInfo* item;
-  int last_pos = 0;
+  int list_size, last_pos = 0;
 
   head = mpris_dbus_list_players ();
-  list = malloc ((sizeof (MPRISPlayerInfo*) * mpris_list_size (head)) + 1);
+  if ((list_size = mpris_list_size (head)) == 0)
+          return NULL;
+  list = malloc ((sizeof (MPRISPlayerInfo*) * list_size) + 1);
   last_pos = mpris_list_foreach (head, fill_info_array, (void*) list);
   list[last_pos] = NULL; /* terminate list with NULL */
   return list;

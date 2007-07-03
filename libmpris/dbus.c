@@ -165,8 +165,6 @@ mpris_dbus_list_players (void)
 	    char * rstring = rindex (names[n], '.');
 	    rstring++;
 	    p_info = mpris_dbus_get_player_info (rstring);
-            printf ("Adding %s - %s to the linked list\n", 
-                            p_info->suffix, p_info->name);
 	    mpris_list_append (players, p_info);
             p_info->node = mpris_list_tail (players);
 	  }
