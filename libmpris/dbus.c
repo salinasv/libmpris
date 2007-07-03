@@ -137,7 +137,8 @@ mpris_dbus_list_players (void)
   DBusMessageIter iter;
   if (!dbus_message_iter_init (out, &iter))
   {
-    fprintf (stderr, "%s:%d: Couldn't init message iter!\n", __FILE__, __LINE__);
+    fprintf (stderr, "%s:%d: Couldn't init message iter!\n",
+                    __FILE__, __LINE__);
     return NULL;
   }
 
@@ -155,7 +156,8 @@ mpris_dbus_list_players (void)
   int n = 0;
   while (names[n])
   {
-    if (!strncasecmp (MPRIS_BUS_NAME_PREFIX, names[n], strlen (MPRIS_BUS_NAME_PREFIX)))
+    if (!strncasecmp (MPRIS_BUS_NAME_PREFIX, names[n], 
+                            strlen (MPRIS_BUS_NAME_PREFIX)))
 	  {
 	    MPRISPlayerInfo * p_info = NULL;
 	    char * rstring = rindex (names[n], '.');
