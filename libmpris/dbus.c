@@ -112,10 +112,12 @@ mpris_dbus_list_players (void)
   DBusError err;
   dbus_error_init (&err);
 
-  in = dbus_message_new_method_call ("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "ListNames");
-  dbus_message_unref (in);   
+  in = dbus_message_new_method_call ("org.freedesktop.DBus", 
+                  "/org/freedesktop/DBus", "org.freedesktop.DBus", "ListNames");
 
-  out = dbus_connection_send_with_reply_and_block (conn, in, 500 /* let's wait half a second max */, &err);
+  out = dbus_connection_send_with_reply_and_block (conn, in, 
+                  500 /* let's wait half a second max */, &err);
+  dbus_message_unref (in);   
     
   if ((out == NULL) || dbus_error_is_set (&err))
   {

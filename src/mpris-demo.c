@@ -10,6 +10,21 @@
 #include <mpris/connection.h>
 #include <mpris/mpris-list.h>
 
+static int
+list_clients (void)
+{
+        MPRISPlayerInfo** p_list = NULL;
+        int i = 0;
+        p_list = mpris_list_players ();
+        while (p_list[i])
+        {
+                printf ("Player: '%s' with identity: '%s'\n", 
+                                p_list[i]->suffix, p_list[i]->name);
+                ++i;
+        }
+
+        return 0;
+}
 int
 main (int n_args, char **args)
 {
@@ -17,10 +32,15 @@ main (int n_args, char **args)
   mpris_client_init ();
 
   if (n_args != 2)
-	  return EXIT_FAILURE;
+  {
+          list_clients ();
+          return EXIT_SUCCESS;
+  }
+
   player = mpris_player_new (args[1]);
 
-  fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n", args[1], MPRIS_PLAYER_NAME(player)); 
+  fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n", 
+                  args[1], MPRIS_PLAYER_NAME(player)); 
   mpris_player_start_listen (player); 
   pthread_join (*player->listen_thread, NULL);
 
