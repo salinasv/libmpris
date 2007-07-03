@@ -26,6 +26,7 @@ typedef struct _MPRISPlayer
 #define MPRIS_PLAYER_NAME(player) \
         player->p_info ? (player->p_info->name) : "NOT CONNECTED"
 #define MPRIS_PLAYER_LOCK(player) pthread_mutex_lock (player->lock)
+#define MPRIS_PLAYER_LOCK(player) pthread_mutex_unlock (player->lock)
 
 int
 mpris_client_init   (void);
