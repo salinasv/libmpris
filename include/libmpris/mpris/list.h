@@ -34,6 +34,10 @@ mpris_list_tail (MPRISList * list);
 size_t
 mpris_list_size (MPRISList * list);
 
+/* Return whether the list is currently an empty list */
+int
+mpris_list_empty (MPRISList * list);
+
 /* Creates a new list instance (either a head item, or a link item, it's the same anyway) */
 MPRISList*
 mpris_list_new ();
