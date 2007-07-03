@@ -18,7 +18,7 @@ struct _MPRISList
 };
 
 typedef void ( * MPRISListDataDestroy ) (void*);
-typedef void ( * MPRISListForeachFunc ) (MPRISList*, void* /* data */);
+typedef void ( * MPRISListForeachFunc ) (MPRISList*, void* /* data */, int /* iteration */);
 typedef int  ( * MPRISListFindFunc )    (MPRISList*, void* /* key */, void* /* data */);
 
 /* Returns the head of the list */

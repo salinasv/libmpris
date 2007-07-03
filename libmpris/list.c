@@ -155,7 +155,7 @@ mpris_list_foreach (MPRISList * list, MPRISListForeachFunc foreach_func, void * 
 
   while (1)
   { 
-    foreach_func (head, data); 
+    foreach_func (head, data, n_iterations); 
     ++n_iterations;
     if (!head->next)
       break;
