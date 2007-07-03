@@ -10,7 +10,8 @@ libmpris_la_LDFLAGS = -export-dynamic
 libmpris_la_LIBADD = $(DBUS_LIBS) -lpthread
 
 libmpris_la_SOURCES = \
-    connection.c  \
-    dbus.c	  \
-    mpris.c	  \
+    connection.c  		\
+    dbus.c	  				\
+    mpris.c	  				\
+		list.c						\
     procedures.c  
