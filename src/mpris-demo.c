@@ -9,6 +9,12 @@
 #include <mpris/dbus.h>
 
 static void
+cb_StatusChange (int status, MPRISPlayer* player, void* user_data)
+{
+        printf ("Status changed to: %d\n", status);
+}
+
+static void
 cb_TrackChange (MPRISMetadata* metadata, MPRISPlayer* player, void* user_data)
 {
         printf ("Changed Track !\n"
@@ -60,6 +66,7 @@ main (int n_args, char **args)
   }
 
   player->callback_functions->track_change = cb_TrackChange;
+  player->callback_functions->status_change = cb_StatusChange;
 
   fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n", 
                   args[1], MPRIS_PLAYER_IDENTITY(player)); 

@@ -231,6 +231,37 @@ handle_TrackChange (DBusMessage* msg, MPRISPlayer* player)
         player->callback_functions->track_change (metadata, player, NULL);
 }
 
+static void
+handle_CapsChange (DBusMessage* msg, MPRISPlayer* player)
+{
+        DBusError err;
+        int caps;
+
+        dbus_error_init (&err);
+        dbus_message_get_args (msg, &err, 
+                        DBUS_TYPE_INT32, &caps, 
+                        DBUS_TYPE_INVALID );
+
+        dbus_error_free (&err);
+        player->callback_functions->caps_change (caps, player, NULL);
+}
+
+static void
+handle_StatusChange (DBusMessage* msg, MPRISPlayer* player)
+{
+        DBusError err;
+        int status;
+
+        dbus_error_init (&err);
+        dbus_message_get_args (msg, &err, 
+                        DBUS_TYPE_INT32, &status, 
+                        DBUS_TYPE_INVALID );
+
+        dbus_error_free (&err);
+        printf ("StatusChange signal handled\n");
+        player->callback_functions->status_change (status, player, NULL);
+}
+
 #define HANDLE_SIGNAL(signal) \
         else if (dbus_message_is_signal (msg, \
 				"org.freedesktop.MediaPlayer", #signal)) \
@@ -243,6 +274,8 @@ handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data)
 
         if (0);
         HANDLE_SIGNAL(TrackChange)
+        HANDLE_SIGNAL(StatusChange)
+        HANDLE_SIGNAL(CapsChange)
 	return 0;
 }
 
