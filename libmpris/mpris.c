@@ -37,8 +37,16 @@ mpris_player_new (const char * p_id)
 {
   MPRISPlayer * player = malloc (sizeof(MPRISPlayer));
   memset (player, 0x00, sizeof(MPRISPlayer));
+  
+  MPRISPlayerInfo * p_info = mpris_dbus_get_player_info (p_id);
 
-  player->p_info = mpris_dbus_get_player_info (p_id);
+  if (!p_info)
+  {
+    free (player);
+    return NULL;
+  }
+
+  player->p_info = p_info; 
   player->listen_thread = (pthread_t*) malloc (sizeof (pthread_t));
   player->lock = (pthread_mutex_t*) malloc (sizeof (pthread_mutex_t));
   pthread_mutex_init (player->lock, NULL);

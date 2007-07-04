@@ -78,6 +78,12 @@ mpris_dbus_get_player_info (const char * player)
   DBusError err;
   dbus_error_init (&err);
 
+  if (!dbus_bus_name_has_owner (conn, name, &err))
+  {
+    free (name);
+    return NULL;
+  }
+
   in = dbus_message_new_method_call (name, MPRIS_ROOT_PATH, 
                   MPRIS_FDO_IFACE_NAME, "Identity");
   out = dbus_connection_send_with_reply_and_block (conn, in, 
