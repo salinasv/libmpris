@@ -38,12 +38,19 @@ mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...)
 {
 }
 
+#ifdef GNUC
+static void* __attribute__ ((unused))
+#else
 static void*
+#endif
 listen_thread (void* user_data)
 {
 	MPRISPlayer* player = (MPRISPlayer*) user_data;
 	while (!player->thread_exit)
 		dbus_connection_read_write_dispatch (conn, -1);
+#ifndef GNUC
+  return NULL; // stupid compilers
+#endif
 }
 
 int
