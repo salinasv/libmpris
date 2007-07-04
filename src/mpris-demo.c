@@ -9,6 +9,19 @@
 #include <mpris/dbus.h>
 #include <mpris/connection.h>
 
+static void
+cb_TrackChange (MPRISMetadata* metadata, MPRISPlayer* player, void* user_data)
+{
+        printf ("Changed Track !\n"
+                "New metadata is:\n"
+                "Title:%s\n"
+                "Artist:%s\n"
+                "Album%s\n", 
+                metadata->title, 
+                metadata->artist, 
+                metadata->album);
+}
+
 static int
 list_clients (void)
 {
@@ -39,6 +52,7 @@ main (int n_args, char **args)
   }
 
   player = mpris_player_new (args[1]);
+  player->callback_functions->track_change = cb_TrackChange;
 
   fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n", 
                   args[1], MPRIS_PLAYER_NAME(player)); 

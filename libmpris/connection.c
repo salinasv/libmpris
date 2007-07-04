@@ -82,6 +82,44 @@ mpris_player_stop_listen (MPRISPlayer *player)
         free (match_rule);
 }
 
+#define alloc_str(name) \
+       metadata->name = (char*) malloc (strlen (str_buf) + 1); 
+
+#define GET_META_ITEM(type,name) \
+        else if (!strcmp (str_buf, #name)) { \
+                dbus_message_iter_next (&dict_entry); \
+                dbus_message_iter_recurse (&dict_entry, &variant); \
+                dbus_message_iter_get_basic (&variant, (void*) &type##_buf); \
+                printf ("OK, got the %s, it is: %s\n", #name , type##_buf); \
+                alloc_##type(name); \
+                strcpy (metadata->name, type##_buf); \
+        }
+
+static void
+handle_track_change (DBusMessage* msg, MPRISPlayer* player)
+{
+        DBusMessageIter args, dict, dict_entry, variant;
+        MPRISMetadata* metadata = NULL;
+        char* str_buf = NULL;
+        char* buf = NULL;
+
+        metadata = (MPRISMetadata*) malloc (sizeof (MPRISMetadata));
+        dbus_message_iter_init (msg, &args);
+        dbus_message_iter_recurse (&args, &dict);
+        do
+        {
+                dbus_message_iter_recurse (&dict, &dict_entry);
+                dbus_message_iter_get_basic (&dict_entry, (void*) &str_buf);
+
+                if (0);
+                GET_META_ITEM (str, title)
+                GET_META_ITEM (str, artist)
+                GET_META_ITEM (str, album)
+        }
+        while (dbus_message_iter_next (&dict)); 
+        player->callback_functions->track_change (metadata, player, NULL);
+}
+
 static DBusHandlerResult
 handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data)
 {
@@ -89,6 +127,6 @@ handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data)
 
 	if (dbus_message_is_signal (msg, 
 				"org.freedesktop.MediaPlayer", "TrackChange"))
-                 printf ("Changed Track !\n");
+                handle_track_change (msg, player);
 	return 0;
 }

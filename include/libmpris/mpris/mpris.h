@@ -28,6 +28,9 @@ typedef struct _MPRISPlayer
 
 typedef struct _MPRISMetadata
 {
+        char* title;
+        char* artist;
+        char* album;
 } MPRISMetadata;
 
 typedef void (* MPRISCallbackTrackChange) (MPRISMetadata*, MPRISPlayer*, void*);
@@ -51,6 +54,9 @@ mpris_client_init   (void);
 
 int
 mpris_server_init   (void);
+
+void
+mpris_metadata_free (MPRISMetadata*);
 
 MPRISPlayer*
 mpris_player_new    (const char *player);

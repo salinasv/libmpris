@@ -23,6 +23,15 @@ mpris_server_init (void)
   return mpris_dbus_init ();
 }
 
+void
+mpris_metadata_free (MPRISMetadata* metadata)
+{
+        if (metadata->title) free (metadata->title);
+        if (metadata->artist) free (metadata->artist);
+        if (metadata->album) free (metadata->album);
+        free (metadata);
+}
+
 MPRISPlayer*
 mpris_player_new (const char * p_id)
 {
@@ -33,6 +42,8 @@ mpris_player_new (const char * p_id)
   player->listen_thread = (pthread_t*) malloc (sizeof (pthread_t));
   player->lock = (pthread_mutex_t*) malloc (sizeof (pthread_mutex_t));
   pthread_mutex_init (player->lock, NULL);
+  player->callback_functions = 
+          (MPRISCallbackFuncs*) malloc (sizeof (MPRISCallbackFuncs));
   return player;
 }
 
@@ -52,6 +63,7 @@ mpris_player_free (MPRISPlayer * player)
   if (player->p_info->suffix) free (player->p_info->suffix);
   if (player->p_info->name) free (player->p_info->name);
   if (player->p_info) free (player->p_info);
+  if (player->callback_functions) free (player->callback_functions);
   if (player) free (player);
 }
 
