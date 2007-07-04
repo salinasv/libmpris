@@ -2,52 +2,9 @@
 #define _MPRIS_H_
 
 #include <pthread.h>
+#include <mpris/types.h>
 #include <mpris/list.h>
-
-typedef struct _MPRISCallbackFuncs MPRISCallbackFuncs;
-
-typedef struct _MPRISPlayerInfo
-{
-  MPRISList * node;
-
-  char *suffix;
-  char *name;
-
-} MPRISPlayerInfo;
-
-typedef struct _MPRISPlayer
-{
-  MPRISPlayerInfo       * p_info;
-  pthread_mutex_t       * lock;
-  pthread_t             * listen_thread;
-  MPRISCallbackFuncs    * callback_functions;
-  int                     thread_exit;
-  void                  * user_data;
-
-} MPRISPlayer;
-
-typedef struct _MPRISMetadata
-{
-        char* title;
-        char* artist;
-        char* album;
-} MPRISMetadata;
-
-typedef void (* MPRISCallbackTrackChange) (MPRISMetadata*, MPRISPlayer*, void*);
-typedef void (* MPRISCallbackStatusChange) (int, MPRISPlayer, void*);
-typedef void (* MPRISCallbackCapsChange) (int, MPRISPlayer, void*);
-
-struct _MPRISCallbackFuncs
-{
-        MPRISCallbackTrackChange  track_change;
-        MPRISCallbackStatusChange status_change;
-        MPRISCallbackCapsChange   caps_change;
-};
-
-#define MPRIS_PLAYER_NAME(player) \
-        player->p_info ? (player->p_info->name) : "NOT CONNECTED"
-#define MPRIS_PLAYER_LOCK(player) pthread_mutex_lock (player->lock)
-#define MPRIS_PLAYER_UNLOCK(player) pthread_mutex_unlock (player->lock)
+#include <mpris/dbus.h>
 
 int
 mpris_client_init   (void);
@@ -67,4 +24,13 @@ mpris_player_free   (MPRISPlayer* player);
 MPRISPlayerInfo**
 mpris_list_players  (void);
 
+int
+mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...); 
+
+int
+mpris_player_start_listen (MPRISPlayer *player);
+
+void
+mpris_player_stop_listen (MPRISPlayer *player);
+ 
 #endif /* _MPRIS_H_ */

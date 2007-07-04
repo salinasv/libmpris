@@ -1,10 +1,9 @@
 libmpris_includedir = $(includedir)/libmpris/mpris
 
 libmpris_include_HEADERS = 	\
-      connection.h   				\
       dbus.h	      				\
-      mpris.h	      				\
-      procedures.h    			\
 			list.h								\
-      mpris-list.h
+      mpris.h	      				\
+			mpris-types.h
+
 
