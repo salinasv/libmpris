@@ -52,6 +52,14 @@ main (int n_args, char **args)
   }
 
   player = mpris_player_new (args[1]);
+
+  if (!player)
+  {
+          fprintf (stdout, "Player 'org.mpris.%s' not found on the bus\n", 
+                          args[1]);
+          return EXIT_FAILURE;
+  }
+
   player->callback_functions->track_change = cb_TrackChange;
 
   fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n", 
