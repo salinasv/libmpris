@@ -90,7 +90,6 @@ mpris_player_stop_listen (MPRISPlayer *player)
                 dbus_message_iter_next (&dict_entry); \
                 dbus_message_iter_recurse (&dict_entry, &variant); \
                 dbus_message_iter_get_basic (&variant, (void*) &type##_buf); \
-                printf ("OK, got the %s, it is: %s\n", #name , type##_buf); \
                 alloc_##type(name); \
                 strcpy (metadata->name, type##_buf); \
         }
