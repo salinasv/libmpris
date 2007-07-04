@@ -7,7 +7,6 @@
 
 #include <mpris/mpris.h>
 #include <mpris/dbus.h>
-#include <mpris/connection.h>
 
 static void
 cb_TrackChange (MPRISMetadata* metadata, MPRISPlayer* player, void* user_data)

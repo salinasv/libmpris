@@ -3,8 +3,6 @@
 
 #include <pthread.h>
 #include <mpris/types.h>
-#include <mpris/list.h>
-#include <mpris/dbus.h>
 
 int
 mpris_client_init   (void);

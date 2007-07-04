@@ -5,10 +5,7 @@
 #include <stdio.h>
 
 #include <dbus/dbus.h>
-
-#include <mpris/mpris-types.h>
-#include <mpris/mpris.h>
-#include <mpris/list.h>
+#include <mpris/types.h>
 
 extern DBusConnection  *conn;
 
