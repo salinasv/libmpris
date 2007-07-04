@@ -62,7 +62,7 @@ main (int n_args, char **args)
   player->callback_functions->track_change = cb_TrackChange;
 
   fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n", 
-                  args[1], MPRIS_PLAYER_NAME(player)); 
+                  args[1], MPRIS_PLAYER_IDENTITY(player)); 
   mpris_player_start_listen (player); 
   pthread_join (*player->listen_thread, NULL);
 

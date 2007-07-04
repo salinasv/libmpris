@@ -4,6 +4,11 @@
 #include <pthread.h>
 #include <mpris/types.h>
 
+#define MPRIS_PLAYER_IDENTITY(player) \
+        player->p_info ? (player->p_info->name) : "NOT CONNECTED"
+#define MPRIS_PLAYER_LOCK(player) pthread_mutex_lock (player->lock)
+#define MPRIS_PLAYER_UNLOCK(player) pthread_mutex_unlock (player->lock)
+
 int
 mpris_client_init   (void);
 

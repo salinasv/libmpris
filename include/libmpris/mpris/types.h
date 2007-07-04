@@ -45,11 +45,6 @@ struct _MPRISCallbackFuncs
         MPRISCallbackCapsChange   caps_change;
 };
 
-#define MPRIS_PLAYER_NAME(player) \
-        player->p_info ? (player->p_info->name) : "NOT CONNECTED"
-#define MPRIS_PLAYER_LOCK(player) pthread_mutex_lock (player->lock)
-#define MPRIS_PLAYER_UNLOCK(player) pthread_mutex_unlock (player->lock)
-
 typedef enum { 
       MPRIS_METHOD_PLAY_NEXT,
       MPRIS_METHOD_PLAY_PREV,
