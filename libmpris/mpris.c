@@ -20,6 +20,9 @@ handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data);
 static char*
 build_match_rule (MPRISPlayer* player);
 
+static MPRISMetadata*
+demarshal_metadata (DBusMessage* msg);
+
 #define SIGNAL_MATCH_RULE_BASE \
 	"type='signal',interface='org.freedesktop.MediaPlayer'"
 
@@ -193,14 +196,12 @@ mpris_player_stop_listen (MPRISPlayer *player)
                 alloc_##type(name); \
                 strcpy (metadata->name, type##_buf); \
         }
-
-static void
-handle_track_change (DBusMessage* msg, MPRISPlayer* player)
+static MPRISMetadata*
+demarshal_metadata (DBusMessage* msg)
 {
         DBusMessageIter args, dict, dict_entry, variant;
         MPRISMetadata* metadata = NULL;
         char* str_buf = NULL;
-        char* buf = NULL;
 
         metadata = (MPRISMetadata*) malloc (sizeof (MPRISMetadata));
         dbus_message_iter_init (msg, &args);
@@ -216,16 +217,33 @@ handle_track_change (DBusMessage* msg, MPRISPlayer* player)
                 GET_META_ITEM (str, album)
         }
         while (dbus_message_iter_next (&dict)); 
+        
+        return metadata;
+}
+
+#undef GET_META_ITEM
+#undef alloc_str
+
+static void
+handle_TrackChange (DBusMessage* msg, MPRISPlayer* player)
+{
+        MPRISMetadata* metadata = demarshal_metadata (msg);
         player->callback_functions->track_change (metadata, player, NULL);
 }
+
+#define HANDLE_SIGNAL(signal) \
+        else if (dbus_message_is_signal (msg, \
+				"org.freedesktop.MediaPlayer", #signal)) \
+                handle_##signal (msg, player);
 
 static DBusHandlerResult
 handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data)
 {
 	MPRISPlayer *player = (MPRISPlayer*) user_data;
 
-	if (dbus_message_is_signal (msg, 
-				"org.freedesktop.MediaPlayer", "TrackChange"))
-                handle_track_change (msg, player);
+        if (0);
+        HANDLE_SIGNAL(TrackChange)
 	return 0;
 }
+
+#undef HANDLE_SIGNAL
