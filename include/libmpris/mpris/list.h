@@ -1,5 +1,5 @@
 /*****************************************************************************
- * 
+ * list.h : MPRISList linked list implementation.                       header
  *****************************************************************************
  * LibMPRIS - Copyright (C) 2007 Milosz Derezynski, Mirsal Ennaime
  *
