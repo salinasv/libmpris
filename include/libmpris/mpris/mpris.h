@@ -1,5 +1,5 @@
 /*****************************************************************************
- * 
+ * mpris.h : libmpris client side dbus wrapper for media players        header
  *****************************************************************************
  * LibMPRIS - Copyright (C) 2007 Milosz Derezynski, Mirsal Ennaime
  *

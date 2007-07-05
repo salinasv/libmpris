@@ -1,5 +1,5 @@
 /*****************************************************************************
- * 
+ * list.c : MPRISList linked list implementation.
  *****************************************************************************
  * LibMPRIS - Copyright (C) 2007 Milosz Derezynski, Mirsal Ennaime
  *
