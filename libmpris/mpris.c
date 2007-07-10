@@ -89,7 +89,7 @@ mpris_player_new (const char * p_id)
   player->lock = (pthread_mutex_t*) malloc (sizeof (pthread_mutex_t));
   pthread_mutex_init (player->lock, NULL);
   player->callback_functions = 
-          (MPRISCallbackFuncs*) malloc (sizeof (MPRISCallbackFuncs));
+          (MPRISCallbackFuncs*) calloc (1, sizeof (MPRISCallbackFuncs));
   return player;
 }
 
@@ -250,7 +250,9 @@ static void
 handle_TrackChange (DBusMessage* msg, MPRISPlayer* player)
 {
         MPRISMetadata* metadata = demarshal_metadata (msg);
-        player->callback_functions->track_change (metadata, player, NULL);
+        if (player->callback_functions->track_change)
+                player->callback_functions->track_change (metadata, 
+                                player, NULL);
 }
 
 static void
@@ -265,7 +267,8 @@ handle_CapsChange (DBusMessage* msg, MPRISPlayer* player)
                         DBUS_TYPE_INVALID );
 
         dbus_error_free (&err);
-        player->callback_functions->caps_change (caps, player, NULL);
+        if (player->callback_functions->caps_change)
+                player->callback_functions->caps_change (caps, player, NULL);
 }
 
 static void
@@ -281,7 +284,9 @@ handle_StatusChange (DBusMessage* msg, MPRISPlayer* player)
 
         dbus_error_free (&err);
         printf ("StatusChange signal handled\n");
-        player->callback_functions->status_change (status, player, NULL);
+        if (player->callback_functions->status_change)
+                player->callback_functions->status_change (status, 
+                                player, NULL);
 }
 
 #define HANDLE_SIGNAL(signal) \
