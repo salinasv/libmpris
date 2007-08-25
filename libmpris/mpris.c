@@ -225,7 +225,7 @@ demarshal_metadata (DBusMessage* msg)
         MPRISMetadata* metadata = NULL;
         char* str_buf = NULL;
 
-        metadata = (MPRISMetadata*) malloc (sizeof (MPRISMetadata));
+        metadata = (MPRISMetadata*) calloc (1, sizeof (MPRISMetadata));
         dbus_message_iter_init (msg, &args);
         dbus_message_iter_recurse (&args, &dict);
         do
