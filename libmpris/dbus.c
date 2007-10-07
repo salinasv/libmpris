@@ -63,12 +63,12 @@ demarshal_strv (DBusMessageIter	* iter)
 
   len = dbus_message_iter_get_array_len (&iter2);
   ret = malloc (sizeof (char *) * (len + 1));
-  
+
   i = 0;
   while ((current_type = dbus_message_iter_get_arg_type (&iter2)) != DBUS_TYPE_INVALID)
   {
     const char * aux;
-    dbus_message_iter_get_basic (&iter2, &aux); 
+    dbus_message_iter_get_basic (&iter2, &aux);
     ret[i] = strdup (aux);
     dbus_message_iter_next (&iter2);
     i++;
@@ -91,7 +91,7 @@ MPRISPlayerInfo*
 mpris_dbus_get_player_info (const char * player)
 {
   MPRISPlayerInfo   * p_info = malloc (sizeof(MPRISPlayerInfo));
-  DBusMessage	      * in = NULL, * out = NULL; /* in as in "into DBus" 
+  DBusMessage       * in = NULL, * out = NULL; /* in as in "into DBus"
                                                     and out as in "from DBus" */
 
   char* name = (char*) malloc (strlen ("org.mpris.") + strlen (player));
@@ -106,11 +106,11 @@ mpris_dbus_get_player_info (const char * player)
     return NULL;
   }
 
-  in = dbus_message_new_method_call (name, MPRIS_ROOT_PATH, 
+  in = dbus_message_new_method_call (name, MPRIS_ROOT_PATH,
                   MPRIS_FDO_IFACE_NAME, "Identity");
-  out = dbus_connection_send_with_reply_and_block (conn, in, 
+  out = dbus_connection_send_with_reply_and_block (conn, in,
                   500 /* let's wait half a second max */, &err);
-    
+
   if ((out == NULL) || dbus_error_is_set (&err))
   {
     fprintf (stderr, "%s:%d: Message call failed!\n", __FILE__, __LINE__);
@@ -120,22 +120,22 @@ mpris_dbus_get_player_info (const char * player)
 
   const char * p_name;
 
-  if (!dbus_message_get_args (out, &err, DBUS_TYPE_STRING, 
+  if (!dbus_message_get_args (out, &err, DBUS_TYPE_STRING,
                           &p_name, DBUS_TYPE_INVALID))
   {
-    fprintf (stderr, "%s:%d: Couldn't get args from message!\n", 
+    fprintf (stderr, "%s:%d: Couldn't get args from message!\n",
                     __FILE__, __LINE__);
     free (name);
     return NULL;
   }
 
   p_info->name = strdup (p_name);
-  p_info->suffix = strdup (player); 
+  p_info->suffix = strdup (player);
 
   free (name);
 
-  dbus_message_unref (in);   
-  dbus_message_unref (out);   
+  dbus_message_unref (in);
+  dbus_message_unref (out);
 
   return p_info;
 }
@@ -145,18 +145,18 @@ mpris_dbus_list_players (void)
 {
   MPRISList* players = mpris_list_new ();
 
-  DBusMessage	 * in = NULL, * out = NULL; /* in as in "into DBus" and out as in "from DBus" */
+  DBusMessage * in = NULL, * out = NULL; /* in as in "into DBus" and out as in "from DBus" */
 
   DBusError err;
   dbus_error_init (&err);
 
-  in = dbus_message_new_method_call ("org.freedesktop.DBus", 
+  in = dbus_message_new_method_call ("org.freedesktop.DBus",
                   "/org/freedesktop/DBus", "org.freedesktop.DBus", "ListNames");
 
-  out = dbus_connection_send_with_reply_and_block (conn, in, 
+  out = dbus_connection_send_with_reply_and_block (conn, in,
                   500 /* let's wait half a second max */, &err);
-  dbus_message_unref (in);   
-    
+  dbus_message_unref (in);
+
   if ((out == NULL) || dbus_error_is_set (&err))
   {
     fprintf (stderr, "%s:%d: Message call failed!\n", __FILE__, __LINE__);
@@ -173,32 +173,32 @@ mpris_dbus_list_players (void)
   }
 
   char ** names = NULL;
-  if (DBUS_TYPE_ARRAY == dbus_message_iter_get_arg_type (&iter)) 
+  if (DBUS_TYPE_ARRAY == dbus_message_iter_get_arg_type (&iter))
   {
     names = demarshal_strv (&iter);
   }
   else
   {
-    dbus_message_unref (out);   
+    dbus_message_unref (out);
     return NULL;
   }
 
   int n = 0;
   while (names[n])
   {
-    if (!strncasecmp (MPRIS_BUS_NAME_PREFIX, names[n], 
+    if (!strncasecmp (MPRIS_BUS_NAME_PREFIX, names[n],
                             strlen (MPRIS_BUS_NAME_PREFIX)))
-	  {
-	    MPRISPlayerInfo * p_info = NULL;
-	    char * rstring = rindex (names[n], '.');
-	    rstring++;
-	    p_info = mpris_dbus_get_player_info (rstring);
-	    mpris_list_append (players, p_info);
+    {
+      MPRISPlayerInfo * p_info = NULL;
+      char * rstring = rindex (names[n], '.');
+      rstring++;
+      p_info = mpris_dbus_get_player_info (rstring);
+      mpris_list_append (players, p_info);
             p_info->node = mpris_list_tail (players);
-	  }
+    }
     ++n;
   }
 
-  dbus_message_unref (out);   
+  dbus_message_unref (out);
   return players;
 }

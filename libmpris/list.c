@@ -56,7 +56,7 @@ size_t
 mpris_list_size (MPRISList * list)
 {
   MPRISList * head = mpris_list_head (list);
-  size_t size = !mpris_list_empty (list); 
+  size_t size = !mpris_list_empty (list);
 
   while (1)
   {
@@ -82,7 +82,7 @@ void
 mpris_list_free (MPRISList * list, MPRISListDataDestroy destroy)
 {
   MPRISList * head1 = mpris_list_head (list);
-  MPRISList * head2 = head1; 
+  MPRISList * head2 = head1;
 
   while (1)
   {
@@ -101,10 +101,10 @@ mpris_list_free (MPRISList * list, MPRISListDataDestroy destroy)
 void
 mpris_list_insert (MPRISList * list, void* data)
 {
-  MPRISList * item = mpris_list_new (); 
+  MPRISList * item = mpris_list_new ();
 
   item->data = data;
-  item->next = list->next; 
+  item->next = list->next;
   item->prev = list;
 
   list->next = item;
@@ -125,7 +125,7 @@ mpris_list_append (MPRISList * list, void* data)
   }
   else
   {
-    MPRISList * tail = mpris_list_tail (list); 
+    MPRISList * tail = mpris_list_tail (list);
     MPRISList * item = mpris_list_new ();
 
     item->prev = tail;
@@ -144,7 +144,7 @@ mpris_list_prepend (MPRISList * list, void* data)
   }
   else
   {
-    MPRISList * head = mpris_list_head (list); 
+    MPRISList * head = mpris_list_head (list);
     MPRISList * item = mpris_list_new ();
 
     item->prev = NULL;
@@ -157,8 +157,8 @@ mpris_list_prepend (MPRISList * list, void* data)
 void
 mpris_list_remove (MPRISList * list, MPRISListDataDestroy destroy)
 {
-  MPRISList * prev = list->prev; 
-  MPRISList * next = list->next; 
+  MPRISList * prev = list->prev;
+  MPRISList * next = list->next;
 
   if (destroy)
   {
@@ -172,12 +172,12 @@ mpris_list_remove (MPRISList * list, MPRISListDataDestroy destroy)
 int
 mpris_list_foreach (MPRISList * list, MPRISListForeachFunc foreach_func, void * data)
 {
-  MPRISList * head = mpris_list_head (list); 
+  MPRISList * head = mpris_list_head (list);
   int n_iterations = 0;
 
   while (1)
-  { 
-    foreach_func (head, data, n_iterations); 
+  {
+    foreach_func (head, data, n_iterations);
     ++n_iterations;
     if (!head->next)
       break;
@@ -191,11 +191,11 @@ mpris_list_foreach (MPRISList * list, MPRISListForeachFunc foreach_func, void * 
 MPRISList*
 mpris_list_find (MPRISList * list, MPRISListFindFunc find_func, void * data_key, void * data)
 {
-  MPRISList * head = mpris_list_head (list); 
+  MPRISList * head = mpris_list_head (list);
 
   while (1)
-  { 
-    int found = find_func (head, data_key, data); 
+  {
+    int found = find_func (head, data_key, data);
     if (found)
     {
       return head;

@@ -84,11 +84,11 @@ mpris_player_new (const char * p_id)
     return NULL;
   }
 
-  player->p_info = p_info; 
+  player->p_info = p_info;
   player->listen_thread = (pthread_t*) malloc (sizeof (pthread_t));
   player->lock = (pthread_mutex_t*) malloc (sizeof (pthread_mutex_t));
   pthread_mutex_init (player->lock, NULL);
-  player->callback_functions = 
+  player->callback_functions =
           (MPRISCallbackFuncs*) calloc (1, sizeof (MPRISCallbackFuncs));
   return player;
 }
@@ -99,8 +99,8 @@ mpris_player_free (MPRISPlayer * player)
   /* TODO: If we keep more stuff in here than just strings, disconnect, etc... */
 
   if (player->listen_thread) free (player->listen_thread);
-  
-  if (player->lock) 
+
+  if (player->lock)
   {
           pthread_mutex_destroy (player->lock);
           free (player->lock);
@@ -142,9 +142,9 @@ match_rule_new (MPRISPlayer* player)
 {
         char* rule = NULL;
         rule = (char*) malloc (strlen (SIGNAL_MATCH_RULE_BASE) +
-                               strlen (",sender='org.mpris.'") + 
+                               strlen (",sender='org.mpris.'") +
                                strlen (player->p_info->suffix) +1);
-        sprintf (rule, "%s,sender='org.mpris.%s'", SIGNAL_MATCH_RULE_BASE, 
+        sprintf (rule, "%s,sender='org.mpris.%s'", SIGNAL_MATCH_RULE_BASE,
                         player->p_info->suffix);
         return rule;
 }
@@ -152,7 +152,7 @@ match_rule_new (MPRISPlayer* player)
 #undef SIGNAL_MATCH_RULE_BASE
 
 int
-mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...) 
+mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...)
 {
 }
 
@@ -163,9 +163,9 @@ static void*
 #endif
 listen_thread (void* user_data)
 {
-	MPRISPlayer* player = (MPRISPlayer*) user_data;
-	while (!player->thread_exit)
-		dbus_connection_read_write_dispatch (conn, -1);
+  MPRISPlayer* player = (MPRISPlayer*) user_data;
+  while (!player->thread_exit)
+    dbus_connection_read_write_dispatch (conn, -1);
 #ifndef GNUC
   return NULL; // stupid compilers
 #endif
@@ -179,14 +179,14 @@ mpris_player_start_listen (MPRISPlayer *player)
 
         dbus_error_init (&err);
 
-	dbus_threads_init_default ();
-	player->thread_exit = 0;
+  dbus_threads_init_default ();
+  player->thread_exit = 0;
         dbus_bus_add_match (conn, match_rule, &err);
         dbus_connection_add_filter (conn,
                  handle_signals, (void*) player, NULL);
-	pthread_create (player->listen_thread, 
-			NULL, listen_thread, (void*) player);
-	dbus_error_free (&err);
+  pthread_create (player->listen_thread,
+      NULL, listen_thread, (void*) player);
+  dbus_error_free (&err);
         free (match_rule);
 
         return 0;
@@ -195,15 +195,15 @@ mpris_player_start_listen (MPRISPlayer *player)
 void
 mpris_player_stop_listen (MPRISPlayer *player)
 {
-	DBusError err;
+  DBusError err;
         char* match_rule = match_rule_new (player);
 
-	dbus_error_init (&err);
-	player->thread_exit = 1;
-	dbus_connection_remove_filter (conn, handle_signals, (void*) player);
-	dbus_bus_remove_match (conn, match_rule, &err);
-	pthread_join (*player->listen_thread, NULL);
-	dbus_error_free (&err);
+  dbus_error_init (&err);
+  player->thread_exit = 1;
+  dbus_connection_remove_filter (conn, handle_signals, (void*) player);
+  dbus_bus_remove_match (conn, match_rule, &err);
+  pthread_join (*player->listen_thread, NULL);
+  dbus_error_free (&err);
         free (match_rule);
 }
 
@@ -238,8 +238,8 @@ demarshal_metadata (DBusMessage* msg)
                 GET_META_ITEM (str, artist)
                 GET_META_ITEM (str, album)
         }
-        while (dbus_message_iter_next (&dict)); 
-        
+        while (dbus_message_iter_next (&dict));
+
         return metadata;
 }
 
@@ -251,7 +251,7 @@ handle_TrackChange (DBusMessage* msg, MPRISPlayer* player)
 {
         MPRISMetadata* metadata = demarshal_metadata (msg);
         if (player->callback_functions->track_change)
-                player->callback_functions->track_change (metadata, 
+                player->callback_functions->track_change (metadata,
                                 player, NULL);
 }
 
@@ -262,8 +262,8 @@ handle_CapsChange (DBusMessage* msg, MPRISPlayer* player)
         int caps;
 
         dbus_error_init (&err);
-        dbus_message_get_args (msg, &err, 
-                        DBUS_TYPE_INT32, &caps, 
+        dbus_message_get_args (msg, &err,
+                        DBUS_TYPE_INT32, &caps,
                         DBUS_TYPE_INVALID );
 
         dbus_error_free (&err);
@@ -278,32 +278,32 @@ handle_StatusChange (DBusMessage* msg, MPRISPlayer* player)
         int status;
 
         dbus_error_init (&err);
-        dbus_message_get_args (msg, &err, 
-                        DBUS_TYPE_INT32, &status, 
+        dbus_message_get_args (msg, &err,
+                        DBUS_TYPE_INT32, &status,
                         DBUS_TYPE_INVALID );
 
         dbus_error_free (&err);
         printf ("StatusChange signal handled\n");
         if (player->callback_functions->status_change)
-                player->callback_functions->status_change (status, 
+                player->callback_functions->status_change (status,
                                 player, NULL);
 }
 
 #define HANDLE_SIGNAL(signal) \
         else if (dbus_message_is_signal (msg, \
-				"org.freedesktop.MediaPlayer", #signal)) \
+        "org.freedesktop.MediaPlayer", #signal)) \
                 handle_##signal (msg, player);
 
 static DBusHandlerResult
 handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data)
 {
-	MPRISPlayer *player = (MPRISPlayer*) user_data;
+  MPRISPlayer *player = (MPRISPlayer*) user_data;
 
         if (0);
         HANDLE_SIGNAL(TrackChange)
         HANDLE_SIGNAL(StatusChange)
         HANDLE_SIGNAL(CapsChange)
-	return 0;
+  return 0;
 }
 
 #undef HANDLE_SIGNAL
