@@ -46,7 +46,7 @@ static MPRISMetadata*
 demarshal_metadata (DBusMessage* msg);
 
 #define SIGNAL_MATCH_RULE_BASE \
-	"type='signal',interface='org.freedesktop.MediaPlayer'"
+  "type='signal',interface='org.freedesktop.MediaPlayer'"
 
 
 int
@@ -75,7 +75,7 @@ mpris_player_new (const char * p_id)
 {
   MPRISPlayer * player = malloc (sizeof(MPRISPlayer));
   memset (player, 0x00, sizeof(MPRISPlayer));
-  
+
   MPRISPlayerInfo * p_info = mpris_dbus_get_player_info (p_id);
 
   if (!p_info)
@@ -118,7 +118,7 @@ fill_info_array (MPRISList* item, void* user_data, int pos)
 {
         MPRISPlayerInfo** info_array = (MPRISPlayerInfo**) user_data;
         info_array[pos] = (MPRISPlayerInfo*) item->data;
-} 
+}
 
 MPRISPlayerInfo**
 mpris_list_players (void)
@@ -208,7 +208,7 @@ mpris_player_stop_listen (MPRISPlayer *player)
 }
 
 #define alloc_str(name) \
-       metadata->name = (char*) malloc (strlen (str_buf) + 1); 
+       metadata->name = (char*) malloc (strlen (str_buf) + 1);
 
 #define GET_META_ITEM(type,name) \
         else if (!strcmp (str_buf, #name)) { \
