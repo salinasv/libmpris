@@ -56,6 +56,14 @@ typedef struct _MPRISMetadata
         char* album;
 } MPRISMetadata;
 
+typedef struct _MPRISPlayerStatus
+{
+        int state;
+        int random;
+        int repeat;
+        int loop;
+} MPRISPlayerStatus;
+
 typedef void (* MPRISCallbackTrackChange) (MPRISMetadata*, MPRISPlayer*, void*);
 typedef void (* MPRISCallbackStatusChange) (int, MPRISPlayer*, void*);
 typedef void (* MPRISCallbackCapsChange) (int, MPRISPlayer*, void*);
@@ -67,7 +75,7 @@ struct _MPRISCallbackFuncs
         MPRISCallbackCapsChange   caps_change;
 };
 
-typedef enum { 
+typedef enum {
       MPRIS_METHOD_PLAY_NEXT,
       MPRIS_METHOD_PLAY_PREV,
       MPRIS_METHOD_PLAY_PAUSE,

@@ -31,9 +31,19 @@
 #include <mpris/dbus.h>
 
 static void
-cb_StatusChange (int status, MPRISPlayer* player, void* user_data)
+cb_StatusChange (MPRISPlayerStatus* status,
+                 MPRISPlayer* player, void* user_data)
 {
-        printf ("Status changed to: %d\n", status);
+        printf ("Status changed !\n"
+                "New status is:\n"
+                "State: %d\n"
+                "Random: %d\n"
+                "Repeat: %d\n"
+                "Loop: %d\n",
+                status->state,
+                status->random,
+                status->repeat,
+                status->loop);
 }
 
 static void
@@ -43,9 +53,9 @@ cb_TrackChange (MPRISMetadata* metadata, MPRISPlayer* player, void* user_data)
                 "New metadata is:\n"
                 "Title: %s\n"
                 "Artist: %s\n"
-                "Album: %s\n", 
-                metadata->title, 
-                metadata->artist, 
+                "Album: %s\n",
+                metadata->title,
+                metadata->artist,
                 metadata->album);
 }
 

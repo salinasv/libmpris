@@ -73,7 +73,7 @@ mpris_metadata_free (MPRISMetadata* metadata)
 MPRISPlayer*
 mpris_player_new (const char * p_id)
 {
-  MPRISPlayer * player = malloc (sizeof(MPRISPlayer));
+  MPRISPlayer * player = calloc (1, sizeof(MPRISPlayer));
   memset (player, 0x00, sizeof(MPRISPlayer));
 
   MPRISPlayerInfo * p_info = mpris_dbus_get_player_info (p_id);
@@ -150,11 +150,6 @@ match_rule_new (MPRISPlayer* player)
 }
 
 #undef SIGNAL_MATCH_RULE_BASE
-
-int
-mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...)
-{
-}
 
 #ifdef GNUC
 static void* __attribute__ ((unused))
@@ -243,6 +238,26 @@ demarshal_metadata (DBusMessage* msg)
         return metadata;
 }
 
+static MPRISPlayerStatus*
+demarshal_status (DBusMessage* msg)
+{
+        DBusMessageIter args, status;
+        MPRISPlayerStatus* ret = malloc (sizeof (MPRISPlayerStatus));
+        int i = 0;
+
+        dbus_message_iter_init (msg, &args);
+        dbus_message_iter_recurse (&args, &status);
+
+        do
+                dbus_message_iter_get_basic (&status,
+                    /* doesn't work */
+                    (void*) (ret + ((i++) * sizeof (int))));
+        while (dbus_message_iter_next (&status));
+
+        return ret;
+}
+
+
 #undef GET_META_ITEM
 #undef alloc_str
 
@@ -253,6 +268,7 @@ handle_TrackChange (DBusMessage* msg, MPRISPlayer* player)
         if (player->callback_functions->track_change)
                 player->callback_functions->track_change (metadata,
                                 player, NULL);
+        if (metadata) mpris_metadata_free (metadata);
 }
 
 static void
@@ -275,18 +291,13 @@ static void
 handle_StatusChange (DBusMessage* msg, MPRISPlayer* player)
 {
         DBusError err;
-        int status;
+        MPRISPlayerStatus* status = demarshal_status (msg);
 
-        dbus_error_init (&err);
-        dbus_message_get_args (msg, &err,
-                        DBUS_TYPE_INT32, &status,
-                        DBUS_TYPE_INVALID );
-
-        dbus_error_free (&err);
         printf ("StatusChange signal handled\n");
         if (player->callback_functions->status_change)
                 player->callback_functions->status_change (status,
                                 player, NULL);
+        if (status) free (status);
 }
 
 #define HANDLE_SIGNAL(signal) \

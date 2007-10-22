@@ -50,9 +50,6 @@ MPRISPlayerInfo**
 mpris_list_players  (void);
 
 int
-mpris_player_invoke_method (MPRISPlayer *player, MPRISMethodId method_id, ...); 
-
-int
 mpris_player_start_listen (MPRISPlayer *player);
 
 void
