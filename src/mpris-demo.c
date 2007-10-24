@@ -1,5 +1,5 @@
 /*****************************************************************************
- * 
+ *
  *****************************************************************************
  * LibMPRIS - Copyright (C) 2007 Milosz Derezynski, Mirsal Ennaime
  *
@@ -34,16 +34,18 @@ static void
 cb_StatusChange (MPRISPlayerStatus* status,
                  MPRISPlayer* player, void* user_data)
 {
+        const char* states[] = { "Playing", "Paused", "Stopped" };
+        const char* boolvalue[] = { "Disabled", "Enabled" };
         printf ("Status changed !\n"
                 "New status is:\n"
-                "State: %d\n"
-                "Random: %d\n"
-                "Repeat: %d\n"
-                "Loop: %d\n",
-                status->state,
-                status->random,
-                status->repeat,
-                status->loop);
+                "State: %s\n"
+                "Random: %s\n"
+                "Repeat: %s\n"
+                "Loop: %s\n",
+                states[status->state],
+                boolvalue[status->random],
+                boolvalue[status->repeat],
+                boolvalue[status->loop]);
 }
 
 static void
@@ -68,7 +70,7 @@ list_clients (void)
                 return EXIT_FAILURE;
         while (p_list[i])
         {
-                printf ("Player: '%s' with identity: '%s'\n", 
+                printf ("Player: '%s' with identity: '%s'\n",
                                 p_list[i]->suffix, p_list[i]->name);
                 ++i;
         }
@@ -92,7 +94,7 @@ main (int n_args, char **args)
 
   if (!player)
   {
-          fprintf (stdout, "Player 'org.mpris.%s' not found on the bus\n", 
+          fprintf (stdout, "Player 'org.mpris.%s' not found on the bus\n",
                           args[1]);
           return EXIT_FAILURE;
   }
@@ -100,9 +102,9 @@ main (int n_args, char **args)
   player->callback_functions->track_change = cb_TrackChange;
   player->callback_functions->status_change = cb_StatusChange;
 
-  fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n", 
-                  args[1], MPRIS_PLAYER_IDENTITY(player)); 
-  mpris_player_start_listen (player); 
+  fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n",
+                  args[1], MPRIS_PLAYER_IDENTITY(player));
+  mpris_player_start_listen (player);
   pthread_join (*player->listen_thread, NULL);
 
   mpris_player_free (player);

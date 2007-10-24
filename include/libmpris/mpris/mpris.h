@@ -54,5 +54,5 @@ mpris_player_start_listen (MPRISPlayer *player);
 
 void
 mpris_player_stop_listen (MPRISPlayer *player);
- 
+
 #endif /* _MPRIS_H_ */

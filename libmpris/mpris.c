@@ -45,6 +45,9 @@ build_match_rule (MPRISPlayer* player);
 static MPRISMetadata*
 demarshal_metadata (DBusMessage* msg);
 
+static MPRISPlayerStatus*
+demarshal_status (DBusMessage* msg);
+
 #define SIGNAL_MATCH_RULE_BASE \
   "type='signal',interface='org.freedesktop.MediaPlayer'"
 
@@ -238,6 +241,13 @@ demarshal_metadata (DBusMessage* msg)
         return metadata;
 }
 
+#undef GET_META_ITEM
+#undef alloc_str
+
+#define GET_STATUS_PART(part) \
+        dbus_message_iter_get_basic (&status, &ret->part); \
+        dbus_message_iter_next (&status);
+
 static MPRISPlayerStatus*
 demarshal_status (DBusMessage* msg)
 {
@@ -248,18 +258,15 @@ demarshal_status (DBusMessage* msg)
         dbus_message_iter_init (msg, &args);
         dbus_message_iter_recurse (&args, &status);
 
-        do
-                dbus_message_iter_get_basic (&status,
-                    /* doesn't work */
-                    (void*) (ret + ((i++) * sizeof (int))));
-        while (dbus_message_iter_next (&status));
+        GET_STATUS_PART (state);
+        GET_STATUS_PART (random);
+        GET_STATUS_PART (repeat);
+        GET_STATUS_PART (loop);
 
         return ret;
 }
 
-
-#undef GET_META_ITEM
-#undef alloc_str
+#undef GET_STATUS_PART
 
 static void
 handle_TrackChange (DBusMessage* msg, MPRISPlayer* player)
@@ -293,7 +300,6 @@ handle_StatusChange (DBusMessage* msg, MPRISPlayer* player)
         DBusError err;
         MPRISPlayerStatus* status = demarshal_status (msg);
 
-        printf ("StatusChange signal handled\n");
         if (player->callback_functions->status_change)
                 player->callback_functions->status_change (status,
                                 player, NULL);

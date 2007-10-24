@@ -29,6 +29,13 @@
 
 typedef struct _MPRISCallbackFuncs MPRISCallbackFuncs;
 
+typedef enum
+{
+    MPRIS_STATE_PLAYING,
+    MPRIS_STATE_PAUSED,
+    MPRIS_STATE_STOPPED
+} MPRISPlayerState;
+
 typedef struct _MPRISPlayerInfo
 {
   MPRISList * node;
@@ -58,7 +65,7 @@ typedef struct _MPRISMetadata
 
 typedef struct _MPRISPlayerStatus
 {
-        int state;
+        MPRISPlayerState state;
         int random;
         int repeat;
         int loop;
@@ -74,24 +81,5 @@ struct _MPRISCallbackFuncs
         MPRISCallbackStatusChange status_change;
         MPRISCallbackCapsChange   caps_change;
 };
-
-typedef enum {
-      MPRIS_METHOD_PLAY_NEXT,
-      MPRIS_METHOD_PLAY_PREV,
-      MPRIS_METHOD_PLAY_PAUSE,
-      MPRIS_METHOD_PLAY_STOP,
-      MPRIS_METHOD_PLAY_CURRENT,
-
-      MPRIS_METHOD_GET_CURRENT_TITLE,
-      MPRIS_METHOD_GET_CURRENT_TRACK,
-
-      MPRIS_METHOD_GET_VOLUME,
-      MPRIS_METHOD_SET_VOLUME
-
-/*
-      MPRIS_METHOD_GET_CURRENT_URI,
-      MPRIS_METHOD_GET_METADATA_FOR_URI
-*/
-} MPRISMethodId;
 
 #endif /* _MPRIS_TYPES_H_ */
