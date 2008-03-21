@@ -1,5 +1,5 @@
 /*****************************************************************************
- *
+ * mpris-demo.c
  *****************************************************************************
  * LibMPRIS - Copyright (C) 2007 Milosz Derezynski, Mirsal Ennaime
  *
@@ -70,8 +70,11 @@ list_clients (void)
                 return EXIT_FAILURE;
         while (p_list[i])
         {
-                printf ("Player: '%s' with identity: '%s'\n",
-                                p_list[i]->suffix, p_list[i]->name);
+                printf ("Player: '%s' with identity: '%s' implements mpris version %d.%d.%d\n",
+                                p_list[i]->suffix, p_list[i]->name,
+				p_list[i]->mpris_version.major,
+				p_list[i]->mpris_version.minor,
+				p_list[i]->mpris_version.revision);
                 ++i;
         }
 

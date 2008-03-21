@@ -77,6 +77,27 @@ demarshal_strv (DBusMessageIter	* iter)
   return ret;
 }
 
+#define GET_VERSION_PART(part) \
+        dbus_message_iter_get_basic (&version, &part); \
+        ret.part = (int) part; \
+        dbus_message_iter_next (&version);
+
+static MPRISVersion
+demarshal_version (DBusMessage* msg)
+{
+        DBusMessageIter args, version;
+	dbus_uint16_t major, minor, revision;
+        MPRISVersion ret;
+
+        dbus_message_iter_init (msg, &args);
+        dbus_message_iter_recurse (&args, &version);
+
+        GET_VERSION_PART (major);
+        GET_VERSION_PART (minor);
+        GET_VERSION_PART (revision);
+
+        return ret;
+}
 int
 mpris_dbus_init (void)
 {
@@ -110,6 +131,7 @@ mpris_dbus_get_player_info (const char * player)
                   MPRIS_FDO_IFACE_NAME, "Identity");
   out = dbus_connection_send_with_reply_and_block (conn, in,
                   500 /* let's wait half a second max */, &err);
+  dbus_message_unref (in);
 
   if ((out == NULL) || dbus_error_is_set (&err))
   {
@@ -126,15 +148,47 @@ mpris_dbus_get_player_info (const char * player)
     fprintf (stderr, "%s:%d: Couldn't get args from message!\n",
                     __FILE__, __LINE__);
     free (name);
+    dbus_message_unref (out);
+    return NULL;
+  }
+
+  dbus_message_unref (out);
+
+  in = dbus_message_new_method_call (name, MPRIS_ROOT_PATH,
+                  MPRIS_FDO_IFACE_NAME, "MprisVersion");
+  out = dbus_connection_send_with_reply_and_block (conn, in,
+                  500 /* let's wait half a second max */, &err);
+  dbus_message_unref (in);
+  free (name);
+
+  if ((out == NULL) || dbus_error_is_set (&err))
+  {
+    fprintf (stderr, "%s:%d: Message call failed!\n", __FILE__, __LINE__);
     return NULL;
   }
 
   p_info->name = strdup (p_name);
   p_info->suffix = strdup (player);
 
-  free (name);
+  DBusMessageIter iter;
+  
+  if (!dbus_message_iter_init (out, &iter))
+  {
+    fprintf (stderr, "%s:%d: Couldn't init message iter!\n",
+                    __FILE__, __LINE__);
+    dbus_message_unref (out);
+    return NULL;
+  }
 
-  dbus_message_unref (in);
+  if (DBUS_TYPE_STRUCT != dbus_message_iter_get_arg_type (&iter))
+  {
+    fprintf (stderr, "%s:%d: Wrong reply type!\n",
+                    __FILE__, __LINE__);
+    dbus_message_unref (out);
+    return NULL;
+  }
+
+  p_info->mpris_version = demarshal_version (out);
   dbus_message_unref (out);
 
   return p_info;

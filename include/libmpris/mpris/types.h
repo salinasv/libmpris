@@ -36,12 +36,20 @@ typedef enum
     MPRIS_STATE_STOPPED
 } MPRISPlayerState;
 
+typedef struct _MPRISVersion
+{
+  int major;
+  int minor;
+  int revision;
+} MPRISVersion;
+
 typedef struct _MPRISPlayerInfo
 {
   MPRISList * node;
 
   char *suffix;
   char *name;
+  MPRISVersion mpris_version;
 
 } MPRISPlayerInfo;
 
