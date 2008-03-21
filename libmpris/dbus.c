@@ -112,10 +112,11 @@ MPRISPlayerInfo*
 mpris_dbus_get_player_info (const char * player)
 {
   MPRISPlayerInfo   * p_info = malloc (sizeof(MPRISPlayerInfo));
+  memset (p_info, 0x00, sizeof(MPRISPlayerInfo));
   DBusMessage       * in = NULL, * out = NULL; /* in as in "into DBus"
                                                     and out as in "from DBus" */
 
-  char* name = (char*) malloc (strlen ("org.mpris.") + strlen (player));
+  char* name = (char*) malloc (strlen ("org.mpris.") + strlen (player) + 1);
   sprintf (name, "org.mpris.%s", player);
 
   DBusError err;
@@ -154,6 +155,9 @@ mpris_dbus_get_player_info (const char * player)
 
   dbus_message_unref (out);
 
+  p_info->name = strdup (p_name);
+  p_info->suffix = strdup (player);
+
   in = dbus_message_new_method_call (name, MPRIS_ROOT_PATH,
                   MPRIS_FDO_IFACE_NAME, "MprisVersion");
   out = dbus_connection_send_with_reply_and_block (conn, in,
@@ -167,8 +171,6 @@ mpris_dbus_get_player_info (const char * player)
     return NULL;
   }
 
-  p_info->name = strdup (p_name);
-  p_info->suffix = strdup (player);
 
   DBusMessageIter iter;
   
