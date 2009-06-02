@@ -86,7 +86,7 @@ static MPRISVersion
 demarshal_version (DBusMessage* msg)
 {
         DBusMessageIter args, version;
-	dbus_uint16_t major, minor, revision;
+	dbus_uint16_t major, minor;
         MPRISVersion ret;
 
         dbus_message_iter_init (msg, &args);
@@ -94,7 +94,6 @@ demarshal_version (DBusMessage* msg)
 
         GET_VERSION_PART (major);
         GET_VERSION_PART (minor);
-        GET_VERSION_PART (revision);
 
         return ret;
 }

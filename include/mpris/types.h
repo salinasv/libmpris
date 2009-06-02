@@ -40,7 +40,6 @@ typedef struct _MPRISVersion
 {
   int major;
   int minor;
-  int revision;
 } MPRISVersion;
 
 typedef struct _MPRISPlayerInfo

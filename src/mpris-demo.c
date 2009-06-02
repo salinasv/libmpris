@@ -70,11 +70,10 @@ list_clients (void)
                 return EXIT_FAILURE;
         while (p_list[i])
         {
-                printf ("Player: '%s' with identity: '%s' implements mpris version %d.%d.%d\n",
+                printf ("Player: '%s' with identity: '%s' implements mpris version %d.%d\n",
                                 p_list[i]->suffix, p_list[i]->name,
 				p_list[i]->mpris_version.major,
-				p_list[i]->mpris_version.minor,
-				p_list[i]->mpris_version.revision);
+				p_list[i]->mpris_version.minor);
                 ++i;
         }
 
