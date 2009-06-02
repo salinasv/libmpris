@@ -4,16 +4,16 @@ transform = s/_/-/g
 
 COMMON_LDFLAGS = -Wl, --export-dynamic
 
-COMMON_LDADD = 													\
-	$(DBUS_LIBS)			      							\
+COMMON_LDADD = 		\
+	$(DBUS_LIBS) 	\
 	$(top_builddir)/libmpris/libmpris.la
 
-COMMON_CFLAGS = 												\
-	-I$(top_srcdir)                     	\
-	-I$(top_srcdir)/include/    	\
-	-DG_LOG_DOMAIN=\"MPRIS\"            	\
-	$(DBUS_CFLAGS)				     						\
-	$(MPRIS_DEFINES)											\
+COMMON_CFLAGS = 				\
+	-I$(top_srcdir) 			\
+	-I$(top_srcdir)/include/  	\
+	-DG_LOG_DOMAIN=\"MPRIS\"   	\
+	$(DBUS_CFLAGS)				\
+	$(MPRIS_DEFINES)			\
 	-D__USE_BSD
 
 mpris_demo_LDFLAGS = $(COMMON_LDFLAGS) 
