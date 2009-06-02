@@ -44,11 +44,11 @@ dnl DBus
 PKG_CHECK_MODULES([DBUS], [dbus-1 >= 0.35.2])
 
 dnl XML stuff
-    PKG_CHECK_MODULES([XML],
+	PKG_CHECK_MODULES([XML],
 	[libxml-2.0 >= 2.6.17])
 
 dnl GLADE 
-    PKG_CHECK_MODULES([GLADE],
+	PKG_CHECK_MODULES([GLADE],
 	[libglade-2.0])
 
 dnl CFLAGS
