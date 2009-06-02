@@ -59,12 +59,12 @@ MPRIS_DEFINES="-DDATA_DIR=\\\"\$(pkgdatadir)\\\""
 AC_SUBST([MPRIS_DEFINES])
 
 AC_CONFIG_FILES([
-    Makefile
-    libmpris/Makefile
-    src/Makefile
-    include/Makefile
+	Makefile
+   	libmpris/Makefile
+	src/Makefile
+	include/Makefile
 	include/mpris/Makefile
-    mpris.pc
+	mpris.pc
 ])
 
 AC_OUTPUT
