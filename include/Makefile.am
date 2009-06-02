@@ -1,1 +1,1 @@
-SUBDIRS = libmpris
+SUBDIRS=mpris

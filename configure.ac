@@ -63,8 +63,7 @@ AC_CONFIG_FILES([
     libmpris/Makefile
     src/Makefile
     include/Makefile
-    include/libmpris/Makefile
-    include/libmpris/mpris/Makefile
+	include/mpris/Makefile
     mpris.pc
 ])
 

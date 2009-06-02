@@ -1,6 +1,6 @@
-libmpris_includedir = $(includedir)/libmpris/mpris
+mpris_includedir = $(includedir)/mpris
 
-libmpris_include_HEADERS = 	\
+mpris_include_HEADERS = 	\
       dbus.h	      				\
 			list.h								\
       mpris.h	      				\

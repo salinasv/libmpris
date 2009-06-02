@@ -10,7 +10,7 @@ COMMON_LDADD = 													\
 
 COMMON_CFLAGS = 												\
 	-I$(top_srcdir)                     	\
-	-I$(top_srcdir)/include/libmpris    	\
+	-I$(top_srcdir)/include/    	\
 	-DG_LOG_DOMAIN=\"MPRIS\"            	\
 	$(DBUS_CFLAGS)				     						\
 	$(MPRIS_DEFINES)											\
