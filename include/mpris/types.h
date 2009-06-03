@@ -79,7 +79,7 @@ typedef struct _MPRISPlayerStatus
 } MPRISPlayerStatus;
 
 typedef void (* MPRISCallbackTrackChange) (MPRISMetadata*, MPRISPlayer*, void*);
-typedef void (* MPRISCallbackStatusChange) (int, MPRISPlayer*, void*);
+typedef void (* MPRISCallbackStatusChange) (MPRISPlayerStatus*, MPRISPlayer*, void*);
 typedef void (* MPRISCallbackCapsChange) (int, MPRISPlayer*, void*);
 
 struct _MPRISCallbackFuncs
