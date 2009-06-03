@@ -324,3 +324,35 @@ handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data)
 }
 
 #undef HANDLE_SIGNAL
+
+MPRISMetadata*
+mpris_metadata_get(MPRISPlayer *player, int track)
+{
+	char *p_name;
+	DBusMessage *msg;
+	MPRISMetadata *metadata = malloc(sizeof(MPRISMetadata));
+	memset(metadata, 0x00, sizeof(MPRISMetadata));
+
+	p_name = player->p_info->suffix;
+	
+	msg = mpris_dbus_get_metadata_msg(p_name, track);
+
+	metadata = demarshal_metadata(msg);
+
+	return metadata;
+
+}
+
+MPRISMetadata*
+mpris_metadata_get_current_track(MPRISPlayer *player)
+{
+	int track;
+	char *p_name;
+
+	p_name = player->p_info->suffix;
+
+	track = mpris_dbus_get_current_track(p_name);
+
+	return mpris_metadata_get(player, track);
+}
+

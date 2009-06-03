@@ -40,5 +40,11 @@ mpris_dbus_list_players (void);
 MPRISPlayerInfo*
 mpris_dbus_get_player_info (const char *player);
 
+DBusMessage*
+mpris_dbus_get_metadata_msg(const char *player, int track);
+
+int
+mpris_dbus_get_current_track(const char *player);
+
 #endif /* _MPRIS_DBUS_H_ */
 

@@ -84,6 +84,7 @@ int
 main (int n_args, char **args)
 {
   MPRISPlayer * player;
+  MPRISMetadata * metadata;
   mpris_client_init ();
 
   if (n_args != 2)
@@ -106,6 +107,12 @@ main (int n_args, char **args)
 
   fprintf (stdout, "MPRIS identity of 'org.mpris.%s' is: '%s'\n",
                   args[1], MPRIS_PLAYER_IDENTITY(player));
+
+  metadata = mpris_metadata_get_current_track(player);
+  printf("Current track: %s (%s) %s\n", metadata->artist, metadata->album,
+		  metadata->title);
+  mpris_metadata_free(metadata);
+
   mpris_player_start_listen (player);
   pthread_join (*player->listen_thread, NULL);
 

@@ -55,4 +55,10 @@ mpris_player_start_listen (MPRISPlayer *player);
 void
 mpris_player_stop_listen (MPRISPlayer *player);
 
+MPRISMetadata*
+mpris_metadata_get_current_track(MPRISPlayer *player);
+
+MPRISMetadata*
+mpris_metadata_get(MPRISPlayer *player, int track);
+
 #endif /* _MPRIS_H_ */

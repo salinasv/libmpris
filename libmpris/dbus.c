@@ -37,6 +37,7 @@
 #include <mpris/list.h>
 
 #define MPRIS_ROOT_PATH         "/"
+#define MPRIS_TRACKLIST_PATH 	"/TrackList"
 #define MPRIS_BUS_NAME_PREFIX   "org.mpris."
 #define MPRIS_FDO_IFACE_NAME    "org.freedesktop.MediaPlayer"
 
@@ -256,4 +257,93 @@ mpris_dbus_list_players (void)
 
   dbus_message_unref (out);
   return players;
+}
+
+DBusMessage*
+mpris_dbus_get_metadata_msg(const char *player, int track)
+{
+	DBusMessage *in = NULL; /* in as "into DBus" */
+	DBusMessage *out = NULL; /* out as "from DBus" */
+	DBusError err;
+
+	char *name = (char*) malloc(strlen("org.mpris") + strlen(player) + 1);
+	sprintf(name, "org.mpris.%s", player);
+
+	dbus_error_init(&err);
+
+	in = dbus_message_new_method_call(name, MPRIS_TRACKLIST_PATH,
+			MPRIS_FDO_IFACE_NAME, "GetMetadata");
+
+	if(!dbus_message_append_args(in, DBUS_TYPE_INT32, &track, DBUS_TYPE_INVALID))
+		printf("Error appending args to message\n");
+
+	out = dbus_connection_send_with_reply_and_block(conn, in,
+			500, &err);
+
+	dbus_message_unref(in);
+	free(name);
+
+	if ((out == NULL) || dbus_error_is_set(&err)) {
+		fprintf (stderr, "%s:%d: Message call failed\n", __FILE__, __LINE__);
+		return NULL;
+	}
+
+	DBusMessageIter iter;
+	if (!dbus_message_iter_init (out, &iter)) {
+		fprintf (stderr, "%s:%d: Couldn't init message iter!\n",
+						__FILE__, __LINE__);
+		dbus_message_unref (out);
+		return NULL;
+	}
+
+	return out;
+}
+
+int
+mpris_dbus_get_current_track(const char *player)
+{
+	int ret;
+	MPRISMetadata *metadata = malloc(sizeof(MPRISMetadata));
+	memset(metadata, 0x00, sizeof(MPRISMetadata));
+	DBusMessage *in = NULL; /* in as "into DBus" */
+	DBusMessage *out = NULL; /* out as "from DBus" */
+	DBusError err;
+
+	char *name = (char*) malloc(strlen("org.mpris") + strlen(player) + 1);
+	sprintf(name, "org.mpris.%s", player);
+
+	dbus_error_init(&err);
+
+	in = dbus_message_new_method_call(name, MPRIS_TRACKLIST_PATH,
+			MPRIS_FDO_IFACE_NAME, "GetCurrentTrack");
+
+	out = dbus_connection_send_with_reply_and_block(conn, in,
+			500, &err);
+
+	dbus_message_unref(in);
+	free(name);
+
+	if ((out == NULL) || dbus_error_is_set(&err)) {
+		fprintf (stderr, "%s:%d: Message call failed\n", __FILE__, __LINE__);
+		return -1;
+	}
+
+	DBusMessageIter iter;
+	if (!dbus_message_iter_init (out, &iter)) {
+		fprintf (stderr, "%s:%d: Couldn't init message iter!\n",
+						__FILE__, __LINE__);
+		dbus_message_unref (out);
+		return -1;
+	}
+
+	if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type (&iter)) {
+		fprintf (stderr, "%s:%d: Wrong reply type!\n",
+					__FILE__, __LINE__);
+		dbus_message_unref (out);
+		return -1;
+	}
+
+	dbus_message_iter_get_basic(&iter, &ret);
+
+	return ret;
 }
