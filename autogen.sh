@@ -136,9 +136,11 @@ cd $TOP_DIR
 touch ChangeLog
 
 #run_or_die $AUTOPOINT -f
-run_or_die $ACLOCAL -I m4
+#run_or_die $ACLOCAL -I m4
+run_or_die $ACLOCAL
 run_or_die $LIBTOOLIZE -f -c --automake
-run_or_die $ACLOCAL -I m4
+#run_or_die $ACLOCAL -I m4
+run_or_die $ACLOCAL
 run_or_die $AUTOCONF
 run_or_die $AUTOHEADER
 run_or_die $AUTOMAKE -a -c
