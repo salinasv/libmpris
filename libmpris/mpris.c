@@ -232,8 +232,10 @@ demarshal_metadata (DBusMessage* msg)
                 dbus_message_iter_get_basic (&dict_entry, (void*) &str_buf);
 
                 if (0);
+                GET_META_ITEM (str, location)
                 GET_META_ITEM (str, title)
                 GET_META_ITEM (str, artist)
+                GET_META_ITEM (str, album)
                 GET_META_ITEM (str, album)
         }
         while (dbus_message_iter_next (&dict));

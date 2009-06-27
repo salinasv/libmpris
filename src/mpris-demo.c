@@ -53,12 +53,16 @@ cb_TrackChange (MPRISMetadata* metadata, MPRISPlayer* player, void* user_data)
 {
         printf ("Changed Track !\n"
                 "New metadata is:\n"
+                "location: %s\n"
                 "Title: %s\n"
                 "Artist: %s\n"
-                "Album: %s\n",
+                "Album: %s\n"
+                "tracknumber %s\n",
+                metadata->location,
                 metadata->title,
                 metadata->artist,
-                metadata->album);
+                metadata->album,
+                metadata->tracknumber);
 }
 
 static int

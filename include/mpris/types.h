@@ -65,9 +65,11 @@ typedef struct _MPRISPlayer
 
 typedef struct _MPRISMetadata
 {
+        char* location;
         char* title;
         char* artist;
         char* album;
+        char* tracknumber;
 } MPRISMetadata;
 
 typedef struct _MPRISPlayerStatus
