@@ -250,8 +250,7 @@ demarshal_metadata (DBusMessage* msg)
 			GET_META_ITEM(str, artist)
 			GET_META_ITEM(str, album)
 			GET_META_ITEM(str, album)
-	}
-	while (dbus_message_iter_next(&dict));
+	} while (dbus_message_iter_next(&dict));
 
 	return metadata;
 }
