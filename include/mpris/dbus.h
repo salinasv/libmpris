@@ -48,5 +48,8 @@ mpris_dbus_get_metadata_msg(const char *player, int track);
 int
 mpris_dbus_get_current_track(const char *player);
 
+void
+mpris_dbus_single_call(const char *player, const char *method);
+
 #endif /* _MPRIS_DBUS_H_ */
 

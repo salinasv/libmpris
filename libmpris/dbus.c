@@ -38,6 +38,7 @@
 
 #define MPRIS_ROOT_PATH         "/"
 #define MPRIS_TRACKLIST_PATH 	"/TrackList"
+#define MPRIS_PLAYER_PATH       "/Player"
 #define MPRIS_BUS_NAME_PREFIX   "org.mpris."
 #define MPRIS_FDO_IFACE_NAME    "org.freedesktop.MediaPlayer"
 
@@ -272,6 +273,15 @@ mpris_dbus_list_players (void)
   return players;
 }
 
+static char*
+create_destination_name(const char *player)
+{
+	char *name = (char*) malloc(strlen("org.mpris") + strlen(player) + 1);
+	sprintf(name, "org.mpris.%s", player);
+
+    return name;
+}
+
 DBusMessage*
 mpris_dbus_get_metadata_msg(const char *player, int track)
 {
@@ -279,8 +289,7 @@ mpris_dbus_get_metadata_msg(const char *player, int track)
 	DBusMessage *out = NULL; /* out as "from DBus" */
 	DBusError err;
 
-	char *name = (char*) malloc(strlen("org.mpris") + strlen(player) + 1);
-	sprintf(name, "org.mpris.%s", player);
+	char *name = create_destination_name(player);
 
 	dbus_error_init(&err);
 
@@ -322,8 +331,7 @@ mpris_dbus_get_current_track(const char *player)
 	DBusMessage *out = NULL; /* out as "from DBus" */
 	DBusError err;
 
-	char *name = (char*) malloc(strlen("org.mpris") + strlen(player) + 1);
-	sprintf(name, "org.mpris.%s", player);
+	char *name = create_destination_name(player);
 
 	dbus_error_init(&err);
 
@@ -359,4 +367,18 @@ mpris_dbus_get_current_track(const char *player)
 	dbus_message_iter_get_basic(&iter, &ret);
 
 	return ret;
+}
+
+void
+mpris_dbus_single_call(const char *player, const char *method)
+{
+	DBusMessage *in = NULL;
+
+	char *name = create_destination_name(player);
+
+	in = dbus_message_new_method_call(name, MPRIS_PLAYER_PATH,
+			MPRIS_FDO_IFACE_NAME, method);
+
+	if (!dbus_connection_send(conn, in, NULL))
+		printf("Error sending the %s call.\n", method);
 }

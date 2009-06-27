@@ -358,3 +358,28 @@ mpris_metadata_get_current_track(MPRISPlayer *player)
 	return mpris_metadata_get(player, track);
 }
 
+
+void mpris_player_next(MPRISPlayer *player)
+{
+    mpris_dbus_single_call(player->p_info->suffix, "Next");
+}
+
+void mpris_player_prev(MPRISPlayer *player)
+{
+    mpris_dbus_single_call(player->p_info->suffix, "Prev");
+}
+
+void mpris_player_pause(MPRISPlayer *player)
+{
+    mpris_dbus_single_call(player->p_info->suffix, "Pause");
+}
+
+void mpris_player_stop(MPRISPlayer *player)
+{
+    mpris_dbus_single_call(player->p_info->suffix, "Stop");
+}
+
+void mpris_player_play(MPRISPlayer *player)
+{
+    mpris_dbus_single_call(player->p_info->suffix, "Play");
+}
