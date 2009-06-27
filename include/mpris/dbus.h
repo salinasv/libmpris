@@ -31,6 +31,8 @@
 
 extern DBusConnection  *conn;
 
+void mpris_dbus_connection_set(DBusConnection *connection);
+
 int
 mpris_dbus_init (void);
 

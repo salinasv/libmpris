@@ -98,14 +98,27 @@ demarshal_version (DBusMessage* msg)
 
         return ret;
 }
+
+void mpris_dbus_connection_set(DBusConnection *connection)
+{
+	conn = connection;
+}
+
 int
 mpris_dbus_init (void)
 {
   DBusError err;
   dbus_error_init (&err);
 
-  conn = dbus_bus_get (DBUS_BUS_SESSION, &err);
-  return (conn != NULL);
+  if (!conn)
+	  conn = dbus_bus_get (DBUS_BUS_SESSION, &err);
+
+  if (!conn) {
+	  printf("dbus: %s\n", err.message);
+	  return 0;
+  }
+
+  return 1;
 }
 
 MPRISPlayerInfo*
