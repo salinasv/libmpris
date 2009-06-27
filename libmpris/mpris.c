@@ -67,12 +67,12 @@ mpris_server_init (void)
 void
 mpris_metadata_free (MPRISMetadata* metadata)
 {
-	if (metadata->title)
-		free(metadata->title);
-	if (metadata->artist)
-		free(metadata->artist);
-	if (metadata->album)
-		free(metadata->album);
+	if (!metadata)
+		return;
+
+	free(metadata->title);
+	free(metadata->artist);
+	free(metadata->album);
 
 	free (metadata);
 }
@@ -104,24 +104,20 @@ mpris_player_free (MPRISPlayer * player)
 {
 	/* TODO: If we keep more stuff in here than just strings, disconnect, etc... */
 
-	if (player->listen_thread)
-		free(player->listen_thread);
+	if (!player)
+		return;
 
 	if (player->lock) {
 		pthread_mutex_destroy(player->lock);
-		free (player->lock);
+		free(player->lock);
 	}
 
-	if (player->p_info->suffix)
-		free(player->p_info->suffix);
-	if (player->p_info->name)
-		free(player->p_info->name);
-	if (player->p_info)
-		free(player->p_info);
-	if (player->callback_functions)
-		free(player->callback_functions);
-	if (player)
-		free(player);
+	free(player->listen_thread);
+	free(player->p_info->suffix);
+	free(player->p_info->name);
+	free(player->p_info);
+	free(player->callback_functions);
+	free(player);
 }
 
 static void
@@ -286,7 +282,8 @@ handle_TrackChange (DBusMessage* msg, MPRISPlayer* player)
 	if (player->callback_functions->track_change)
 		player->callback_functions->track_change(metadata,
 				player, NULL);
-	if (metadata) mpris_metadata_free(metadata);
+
+	mpris_metadata_free(metadata);
 }
 
 static void
@@ -314,7 +311,7 @@ handle_StatusChange (DBusMessage* msg, MPRISPlayer* player)
 	if (player->callback_functions->status_change)
 		player->callback_functions->status_change(status,
 				player, NULL);
-	if (status) free(status);
+	free(status);
 }
 
 #define HANDLE_SIGNAL(signal) \
