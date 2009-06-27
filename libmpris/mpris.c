@@ -96,6 +96,7 @@ mpris_player_new (const char * p_id)
 	pthread_mutex_init (player->lock, NULL);
 	player->callback_functions =
 		(MPRISCallbackFuncs*) calloc(1, sizeof(MPRISCallbackFuncs));
+
 	return player;
 }
 
@@ -136,11 +137,14 @@ mpris_list_players (void)
 	int list_size, last_pos = 0;
 
 	head = mpris_dbus_list_players ();
+
 	if ((list_size = mpris_list_size(head)) == 0)
 		return NULL;
+
 	list = malloc ((sizeof(MPRISPlayerInfo*) * list_size) + 1);
 	last_pos = mpris_list_foreach(head, fill_info_array, (void*) list);
 	list[last_pos] = NULL; /* terminate list with NULL */
+
 	return list;
 }
 
@@ -153,6 +157,7 @@ match_rule_new (MPRISPlayer* player)
 			strlen(player->p_info->suffix) +1);
 	sprintf(rule, "%s,sender='org.mpris.%s'", SIGNAL_MATCH_RULE_BASE,
 			player->p_info->suffix);
+
 	return rule;
 }
 
@@ -166,8 +171,10 @@ static void*
 listen_thread (void* user_data)
 {
 	MPRISPlayer* player = (MPRISPlayer*) user_data;
+
 	while (!player->thread_exit)
 		dbus_connection_read_write_dispatch (conn, -1);
+
 #ifndef GNUC
 	return NULL; // stupid compilers
 #endif
@@ -231,6 +238,7 @@ demarshal_metadata (DBusMessage* msg)
 	metadata = (MPRISMetadata*) calloc(1, sizeof (MPRISMetadata));
 	dbus_message_iter_init(msg, &args);
 	dbus_message_iter_recurse(&args, &dict);
+
 	do
 	{
 		dbus_message_iter_recurse(&dict, &dict_entry);
@@ -279,6 +287,7 @@ static void
 handle_TrackChange (DBusMessage* msg, MPRISPlayer* player)
 {
 	MPRISMetadata* metadata = demarshal_metadata(msg);
+
 	if (player->callback_functions->track_change)
 		player->callback_functions->track_change(metadata,
 				player, NULL);
@@ -298,6 +307,7 @@ handle_CapsChange (DBusMessage* msg, MPRISPlayer* player)
 			DBUS_TYPE_INVALID );
 
 	dbus_error_free (&err);
+
 	if (player->callback_functions->caps_change)
 		player->callback_functions->caps_change (caps, player, NULL);
 }
@@ -311,6 +321,7 @@ handle_StatusChange (DBusMessage* msg, MPRISPlayer* player)
 	if (player->callback_functions->status_change)
 		player->callback_functions->status_change(status,
 				player, NULL);
+
 	free(status);
 }
 
