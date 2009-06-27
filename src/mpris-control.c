@@ -6,7 +6,7 @@
 struct option long_options[] = {
 	{"prev",		0,	NULL,   'p'},
 	{"next",		0,	NULL,   'n'},
-	{"pause",   	0,	NULL,   'a'},
+	{"pause", 		0,	NULL,   'a'},
 	{"play",		0,	NULL,   'P'},
 	{"stop",		0,	NULL,   's'},
 	{"metadata", 	0, 	NULL, 	'm'},
