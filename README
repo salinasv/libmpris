@@ -1,3 +1,4 @@
 Codestyle:
-We use <tab> as indentation character, please, do not use spaces.
-The code uses vim's ts=4 sw=4 noexpandtab
+* We use <tab> as indentation character, please, do not use spaces.
+	The code uses vim's ts=4 sw=4 noexpandtab
+* Functions doesn't have space between the function name and '('.
