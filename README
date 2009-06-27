@@ -1,4 +1,8 @@
 Codestyle:
+We are suppoused to follow K&R codestyle
+
 * We use <tab> as indentation character, please, do not use spaces.
 	The code uses vim's ts=4 sw=4 noexpandtab
 * Functions doesn't have space between the function name and '('.
+* 'if' statement uses one single line for itself.
+

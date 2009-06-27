@@ -67,9 +67,13 @@ mpris_server_init (void)
 void
 mpris_metadata_free (MPRISMetadata* metadata)
 {
-	if (metadata->title) free(metadata->title);
-	if (metadata->artist) free(metadata->artist);
-	if (metadata->album) free(metadata->album);
+	if (metadata->title)
+		free(metadata->title);
+	if (metadata->artist)
+		free(metadata->artist);
+	if (metadata->album)
+		free(metadata->album);
+
 	free (metadata);
 }
 
@@ -81,8 +85,7 @@ mpris_player_new (const char * p_id)
 
 	MPRISPlayerInfo * p_info = mpris_dbus_get_player_info(p_id);
 
-	if (!p_info)
-	{
+	if (!p_info) {
 		free (player);
 		return NULL;
 	}
@@ -101,19 +104,24 @@ mpris_player_free (MPRISPlayer * player)
 {
 	/* TODO: If we keep more stuff in here than just strings, disconnect, etc... */
 
-	if (player->listen_thread) free(player->listen_thread);
+	if (player->listen_thread)
+		free(player->listen_thread);
 
-	if (player->lock)
-	{
+	if (player->lock) {
 		pthread_mutex_destroy(player->lock);
 		free (player->lock);
 	}
 
-	if (player->p_info->suffix) free(player->p_info->suffix);
-	if (player->p_info->name) free(player->p_info->name);
-	if (player->p_info) free(player->p_info);
-	if (player->callback_functions) free(player->callback_functions);
-	if (player) free(player);
+	if (player->p_info->suffix)
+		free(player->p_info->suffix);
+	if (player->p_info->name)
+		free(player->p_info->name);
+	if (player->p_info)
+		free(player->p_info);
+	if (player->callback_functions)
+		free(player->callback_functions);
+	if (player)
+		free(player);
 }
 
 static void
@@ -233,7 +241,7 @@ demarshal_metadata (DBusMessage* msg)
 		dbus_message_iter_get_basic(&dict_entry, (void*) &str_buf);
 
 		if (0);
-		GET_META_ITEM(str, location)
+			GET_META_ITEM(str, location)
 			GET_META_ITEM(str, title)
 			GET_META_ITEM(str, artist)
 			GET_META_ITEM(str, album)
@@ -320,10 +328,10 @@ handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data)
 	MPRISPlayer *player = (MPRISPlayer*) user_data;
 
 	if (0);
-	HANDLE_SIGNAL(TrackChange)
+		HANDLE_SIGNAL(TrackChange)
 		HANDLE_SIGNAL(StatusChange)
 		HANDLE_SIGNAL(CapsChange)
-		return 0;
+	return 0;
 }
 
 #undef HANDLE_SIGNAL
