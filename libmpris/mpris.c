@@ -355,6 +355,9 @@ mpris_metadata_get(MPRISPlayer *player, int track)
 
 	msg = mpris_dbus_get_metadata_msg(p_name, track);
 
+	if (!msg)
+		return NULL;
+
 	metadata = demarshal_metadata(msg);
 
 	return metadata;
