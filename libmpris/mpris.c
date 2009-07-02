@@ -70,9 +70,11 @@ mpris_metadata_free (MPRISMetadata* metadata)
 	if (!metadata)
 		return;
 
+	free(metadata->location);
 	free(metadata->title);
 	free(metadata->artist);
 	free(metadata->album);
+	free(metadata->tracknumber);
 
 	free (metadata);
 }
