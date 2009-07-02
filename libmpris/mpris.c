@@ -251,7 +251,7 @@ demarshal_metadata (DBusMessage* msg)
 			GET_META_ITEM(str, title)
 			GET_META_ITEM(str, artist)
 			GET_META_ITEM(str, album)
-			GET_META_ITEM(str, album)
+			GET_META_ITEM(str, tracknumber)
 	} while (dbus_message_iter_next(&dict));
 
 	return metadata;
