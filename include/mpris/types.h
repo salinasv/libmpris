@@ -32,61 +32,61 @@ typedef struct _MPRISCallbackFuncs MPRISCallbackFuncs;
 
 typedef enum
 {
-    MPRIS_STATE_PLAYING,
-    MPRIS_STATE_PAUSED,
-    MPRIS_STATE_STOPPED
+	MPRIS_STATE_PLAYING,
+	MPRIS_STATE_PAUSED,
+	MPRIS_STATE_STOPPED
 } MPRISPlayerState;
 
 typedef struct _MPRISVersion
 {
-  int major;
-  int minor;
+	int major;
+	int minor;
 } MPRISVersion;
 
 typedef struct _MPRISPlayerInfo
 {
-  MPRISList * node;
+	MPRISList * node;
 
-  char *suffix;
-  char *name;
-  MPRISVersion mpris_version;
+	char *suffix;
+	char *name;
+	MPRISVersion mpris_version;
 
 } MPRISPlayerInfo;
 
 typedef struct _MPRISPlayer
 {
-  MPRISPlayerInfo       * p_info;
-  pthread_mutex_t       * lock;
-  pthread_t             * listen_thread;
-  MPRISCallbackFuncs    * callback_functions;
-  int                     thread_exit;
-  void                  * user_data;
+	MPRISPlayerInfo       * p_info;
+	pthread_mutex_t       * lock;
+	pthread_t             * listen_thread;
+	MPRISCallbackFuncs    * callback_functions;
+	int                     thread_exit;
+	void                  * user_data;
 
 } MPRISPlayer;
 
 typedef struct _MPRISMetadata
 {
-        char* location;
-        char* title;
-        char* artist;
-        char* album;
-        char* tracknumber;
-		uint32_t time;
-		uint32_t mtime;
-		char* genere;
-		char* comment;
-		uint32_t rating;
-		uint32_t year;
-		uint32_t date;
-		char* aturl;
+	char* location;
+	char* title;
+	char* artist;
+	char* album;
+	char* tracknumber;
+	uint32_t time;
+	uint32_t mtime;
+	char* genere;
+	char* comment;
+	uint32_t rating;
+	uint32_t year;
+	uint32_t date;
+	char* aturl;
 } MPRISMetadata;
 
 typedef struct _MPRISPlayerStatus
 {
-        MPRISPlayerState state;
-        int random;
-        int repeat;
-        int loop;
+	MPRISPlayerState state;
+	int random;
+	int repeat;
+	int loop;
 } MPRISPlayerStatus;
 
 typedef void (* MPRISCallbackTrackChange) (MPRISMetadata*, MPRISPlayer*, void*);
@@ -95,9 +95,9 @@ typedef void (* MPRISCallbackCapsChange) (int, MPRISPlayer*, void*);
 
 struct _MPRISCallbackFuncs
 {
-        MPRISCallbackTrackChange  track_change;
-        MPRISCallbackStatusChange status_change;
-        MPRISCallbackCapsChange   caps_change;
+	MPRISCallbackTrackChange  track_change;
+	MPRISCallbackStatusChange status_change;
+	MPRISCallbackCapsChange   caps_change;
 };
 
 #endif /* _MPRIS_TYPES_H_ */
