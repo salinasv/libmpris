@@ -39,9 +39,6 @@ listen_thread (void* user_data);
 static DBusHandlerResult
 handle_signals (DBusConnection* conn, DBusMessage* msg, void* user_data);
 
-static char*
-build_match_rule (MPRISPlayer* player);
-
 static MPRISMetadata*
 demarshal_metadata (DBusMessage* msg);
 
