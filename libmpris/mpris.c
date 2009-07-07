@@ -72,6 +72,9 @@ mpris_metadata_free (MPRISMetadata* metadata)
 	free(metadata->artist);
 	free(metadata->album);
 	free(metadata->tracknumber);
+	free(metadata->genere);
+	free(metadata->comment);
+	free(metadata->aturl);
 
 	free (metadata);
 }
