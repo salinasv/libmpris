@@ -84,8 +84,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	if (metadata)
-		mpris_metadata_free(metadata);
+	mpris_metadata_free(metadata);
 
 	mpris_player_free(player);
 
