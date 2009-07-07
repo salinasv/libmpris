@@ -135,7 +135,6 @@ mpris_list_players (void)
 {
 	MPRISList *head;
 	MPRISPlayerInfo** list;
-	MPRISPlayerInfo* item;
 	int list_size, last_pos = 0;
 
 	head = mpris_dbus_list_players ();
@@ -301,7 +300,6 @@ demarshal_status (DBusMessage* msg)
 {
 	DBusMessageIter args, status;
 	MPRISPlayerStatus* ret = malloc(sizeof (MPRISPlayerStatus));
-	int i = 0;
 
 	dbus_message_iter_init(msg, &args);
 	dbus_message_iter_recurse(&args, &status);
@@ -348,7 +346,6 @@ handle_CapsChange (DBusMessage* msg, MPRISPlayer* player)
 static void
 handle_StatusChange (DBusMessage* msg, MPRISPlayer* player)
 {
-	DBusError err;
 	MPRISPlayerStatus* status = demarshal_status(msg);
 
 	if (player->callback_functions->status_change)
