@@ -285,9 +285,6 @@ demarshal_metadata (DBusMessage* msg)
 	return metadata;
 }
 
-#undef GET_META_ITEM
-#undef alloc_str
-
 #define GET_STATUS_PART(part) \
 	dbus_message_iter_get_basic (&status, &ret->part); \
 dbus_message_iter_next (&status);
