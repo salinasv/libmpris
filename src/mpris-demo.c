@@ -57,12 +57,29 @@ cb_TrackChange (MPRISMetadata* metadata, MPRISPlayer* player, void* user_data)
 		"Title: %s\n"
 		"Artist: %s\n"
 		"Album: %s\n"
-		"tracknumber %s\n",
+		"Tracknumber: %s\n"
+		"Time: %d\n"
+		"mTime: %d\n"
+		"Genere: %s\n"
+		"Comment: %s\n"
+		"Rating: %d\n"
+		"Year: %d\n"
+		"Date: %d\n"
+		"At URL: %s\n",
 		metadata->location,
 		metadata->title,
 		metadata->artist,
 		metadata->album,
-		metadata->tracknumber);
+		metadata->tracknumber,
+		metadata->time,
+		metadata->mtime,
+		metadata->genere,
+		metadata->comment,
+		metadata->rating,
+		metadata->year,
+		metadata->date,
+		metadata->aturl
+			);
 }
 
 static int

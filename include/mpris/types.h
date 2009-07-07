@@ -26,6 +26,7 @@
 #include <pthread.h>
 #include <mpris/list.h>
 #include <string.h>
+#include <stdint.h>
 
 typedef struct _MPRISCallbackFuncs MPRISCallbackFuncs;
 
@@ -70,6 +71,14 @@ typedef struct _MPRISMetadata
         char* artist;
         char* album;
         char* tracknumber;
+		uint32_t time;
+		uint32_t mtime;
+		char* genere;
+		char* comment;
+		uint32_t rating;
+		uint32_t year;
+		uint32_t date;
+		char* aturl;
 } MPRISMetadata;
 
 typedef struct _MPRISPlayerStatus

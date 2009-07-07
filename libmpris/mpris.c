@@ -218,22 +218,33 @@ mpris_player_stop_listen (MPRISPlayer *player)
 	free(match_rule);
 }
 
-#define alloc_str(name) \
-	metadata->name = (char*) malloc (strlen (str_buf) + 1);
+static void get_meta_item_str(DBusMessageIter *dict_entry, char **item)
+{
+	DBusMessageIter variant;
+	char *str_buf;
 
-#define GET_META_ITEM(type,name) \
-	else if (!strcmp(str_buf, #name)) { \
-		dbus_message_iter_next(&dict_entry); \
-		dbus_message_iter_recurse(&dict_entry, &variant); \
-		dbus_message_iter_get_basic(&variant, (void*) &type##_buf); \
-		alloc_##type(name); \
-		strcpy(metadata->name, type##_buf); \
-	}
+	dbus_message_iter_next(dict_entry);
+	dbus_message_iter_recurse(dict_entry, &variant);
+	dbus_message_iter_get_basic(&variant, (void*) &str_buf);
+
+	*item = malloc(strlen(str_buf) + 1);
+	strcpy(*item, str_buf);
+}
+
+static void get_meta_item_uint32(DBusMessageIter *dict_entry, uint32_t *item)
+{
+	DBusMessageIter variant;
+
+	dbus_message_iter_next(dict_entry);
+	dbus_message_iter_recurse(dict_entry, &variant);
+	dbus_message_iter_get_basic(&variant, (void*) item);
+}
+
 
 static MPRISMetadata*
 demarshal_metadata (DBusMessage* msg)
 {
-	DBusMessageIter args, dict, dict_entry, variant;
+	DBusMessageIter args, dict, dict_entry;
 	MPRISMetadata* metadata = NULL;
 	char* str_buf = NULL;
 
@@ -246,12 +257,33 @@ demarshal_metadata (DBusMessage* msg)
 		dbus_message_iter_recurse(&dict, &dict_entry);
 		dbus_message_iter_get_basic(&dict_entry, (void*) &str_buf);
 
-		if (0);
-			GET_META_ITEM(str, location)
-			GET_META_ITEM(str, title)
-			GET_META_ITEM(str, artist)
-			GET_META_ITEM(str, album)
-			GET_META_ITEM(str, tracknumber)
+		if (!strcmp(str_buf, "location"))
+			get_meta_item_str(&dict_entry, &metadata->location);
+		else if (!strcmp(str_buf, "title"))
+			get_meta_item_str(&dict_entry, &metadata->title);
+		else if (!strcmp(str_buf, "artist"))
+			get_meta_item_str(&dict_entry, &metadata->artist);
+		else if (!strcmp(str_buf, "album"))
+			get_meta_item_str(&dict_entry, &metadata->album);
+		else if (!strcmp(str_buf, "tracknumber"))
+			get_meta_item_str(&dict_entry, &metadata->tracknumber);
+		else if (!strcmp(str_buf, "time"))
+			get_meta_item_uint32(&dict_entry, &(metadata->time));
+		else if (!strcmp(str_buf, "mtime"))
+			get_meta_item_uint32(&dict_entry, &(metadata->mtime));
+		else if (!strcmp(str_buf, "genere"))
+			get_meta_item_str(&dict_entry, &metadata->genere);
+		else if (!strcmp(str_buf, "comment"))
+			get_meta_item_str(&dict_entry, &metadata->comment);
+		else if (!strcmp(str_buf, "rating"))
+			get_meta_item_uint32(&dict_entry, &(metadata->rating));
+		else if (!strcmp(str_buf, "year"))
+			get_meta_item_uint32(&dict_entry, &(metadata->year));
+		else if (!strcmp(str_buf, "date"))
+			get_meta_item_uint32(&dict_entry, &(metadata->date));
+		else if (!strcmp(str_buf, "aturl"))
+			get_meta_item_str(&dict_entry, &metadata->aturl);
+
 	} while (dbus_message_iter_next(&dict));
 
 	return metadata;
