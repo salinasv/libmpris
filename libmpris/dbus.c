@@ -419,3 +419,27 @@ clean:
 	dbus_message_unref(in);
 	free(name);
 }
+
+void
+mpris_dbus_del_track(const char *player, int index)
+{
+	DBusMessage *in = NULL; /* in as "into DBus" */
+
+	char *name = create_destination_name(player);
+
+	in = dbus_message_new_method_call(name, MPRIS_TRACKLIST_PATH,
+			MPRIS_FDO_IFACE_NAME, "DelTrack");
+
+	if(!dbus_message_append_args(in, DBUS_TYPE_INT32, &index, DBUS_TYPE_INVALID))
+    {
+		fputs("Error appending args to message\n", stderr);
+        goto clean;
+    }
+
+	if (!dbus_connection_send(conn, in, NULL))
+		fputs("Error sending the SetRandom call.\n", stderr);
+
+clean:
+	dbus_message_unref(in);
+	free(name);
+}
