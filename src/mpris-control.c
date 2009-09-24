@@ -16,6 +16,8 @@ struct option long_options[] = {
 	{"randomon",	0,  NULL,   'r'},
 	{"randomoff", 	0,  NULL,   'R'},
 	{"deltrack", 	1,  NULL,   'd'},
+	{"addtrack", 	1,  NULL,   't'},
+	{"autoplay", 	0,  NULL,   'b'},   /* together with addtrack */
 	{"getlength", 	0,  NULL,   'g'},
 	{0,0,0,0}
 };
@@ -27,6 +29,8 @@ int main(int argc, char** argv)
 	MPRISMetadata *metadata = NULL;
 	int opt;
 	int init;
+	int added;
+	int autoplay = 0;
 
 	init = mpris_client_init();
 
@@ -73,6 +77,17 @@ int main(int argc, char** argv)
 				break;
 			case 'g':
 				printf("Elements: %d\n", mpris_tracklist_get_length(player));
+				break;
+			case 'b':
+				autoplay = 1;
+				break;
+			case 't':
+				printf("adding %s\n", optarg);
+				added = mpris_tracklist_add_track(player, optarg, autoplay);
+				if(added == -1)
+					printf("Adding \"%s\" failed!\n", optarg);
+				else
+					printf("Added at position %d\n", added);
 				break;
 			case 'm':
 				metadata = mpris_metadata_get_current_track(player);

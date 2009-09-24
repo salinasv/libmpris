@@ -446,6 +446,11 @@ void mpris_tracklist_del_track(MPRISPlayer *player, int index)
 	mpris_dbus_del_track(player->p_info->suffix, index);
 }
 
+int mpris_tracklist_add_track(MPRISPlayer *player, const char *uri, int play)
+{
+	mpris_dbus_add_track(player->p_info->suffix, uri, play);
+}
+
 int mpris_tracklist_get_length(MPRISPlayer *player)
 {
 	return mpris_dbus_get_length(player->p_info->suffix);

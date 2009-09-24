@@ -86,6 +86,9 @@ void
 mpris_tracklist_del_track(MPRISPlayer *player, int index);
 
 int
+mpris_tracklist_add_track(MPRISPlayer *player, const char *uri, int play);
+
+int
 mpris_tracklist_get_length(MPRISPlayer *player);
 
 #endif /* _MPRIS_H_ */

@@ -61,6 +61,9 @@ void
 mpris_dbus_del_track(const char *player, int index);
 
 int
+mpris_dbus_add_track(const char *player, const char *uri, int play);
+
+int
 mpris_dbus_get_length(const char *player);
 
 #endif /* _MPRIS_DBUS_H_ */

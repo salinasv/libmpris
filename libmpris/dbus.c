@@ -445,6 +445,66 @@ clean:
 }
 
 int
+mpris_dbus_add_track(const char *player, const char *uri, int play)
+{
+	DBusMessage *in = NULL; /* in as "into DBus" */
+	DBusMessage *out = NULL; /* out as "from DBus" */
+	DBusError err;
+    int ret;
+
+	char *name = create_destination_name(player);
+
+	dbus_error_init(&err);
+
+	in = dbus_message_new_method_call(name, MPRIS_TRACKLIST_PATH,
+			MPRIS_FDO_IFACE_NAME, "AddTrack");
+
+	if(!dbus_message_append_args(in,
+            DBUS_TYPE_STRING, &uri,
+            DBUS_TYPE_BOOLEAN, &play,
+            DBUS_TYPE_INVALID))
+    {
+		fputs("Error appending args to message\n", stderr);
+        goto error;
+    }
+
+	out = dbus_connection_send_with_reply_and_block(conn, in,
+			500, &err);
+
+	dbus_message_unref(in);
+	free(name);
+
+	if ((out == NULL) || dbus_error_is_set(&err)) {
+		fprintf (stderr, "%s:%d: Message call failed\n", __FILE__, __LINE__);
+		goto error;
+	}
+
+	DBusMessageIter iter;
+	if (!dbus_message_iter_init (out, &iter)) {
+		fprintf (stderr, "%s:%d: Couldn't init message iter!\n",
+				__FILE__, __LINE__);
+        goto error;
+	}
+
+	if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type (&iter)) {
+		fprintf (stderr, "%s:%d: Wrong reply type!\n",
+				__FILE__, __LINE__);
+        goto error;
+	}
+
+	dbus_message_iter_get_basic(&iter, &ret);
+
+	return ret;
+
+error:
+	dbus_message_unref(in);
+	dbus_message_unref(out);
+	free(name);
+
+    return -1;
+}
+
+int
 mpris_dbus_get_length(const char *player)
 {
 	int ret;
