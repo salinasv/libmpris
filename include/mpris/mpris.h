@@ -79,4 +79,7 @@ mpris_player_play(MPRISPlayer *player);
 void
 mpris_tracklist_set_loop(MPRISPlayer *player, int boolean);
 
+void
+mpris_tracklist_set_random(MPRISPlayer *player, int boolean);
+
 #endif /* _MPRIS_H_ */

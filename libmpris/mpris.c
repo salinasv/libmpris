@@ -435,3 +435,8 @@ void mpris_tracklist_set_loop(MPRISPlayer *player, int boolean)
 {
 	mpris_dbus_set_loop(player->p_info->suffix, boolean);
 }
+
+void mpris_tracklist_set_random(MPRISPlayer *player, int boolean)
+{
+	mpris_dbus_set_random(player->p_info->suffix, boolean);
+}

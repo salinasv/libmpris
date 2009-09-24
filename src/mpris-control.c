@@ -12,6 +12,8 @@ struct option long_options[] = {
 	{"metadata", 	0, 	NULL, 	'm'},
 	{"loopon",		0,  NULL,   'l'},
 	{"loopoff",	 	0,  NULL,   'L'},
+	{"randomon",	0,  NULL,   'r'},
+	{"randomoff", 	0,  NULL,   'R'},
 	{0,0,0,0}
 };
 
@@ -56,6 +58,12 @@ int main(int argc, char** argv)
 				break;
 			case 'L':
 				mpris_tracklist_set_loop(player, 0);
+				break;
+			case 'r':
+				mpris_tracklist_set_random(player, 1);
+				break;
+			case 'R':
+				mpris_tracklist_set_random(player, 0);
 				break;
 			case 'm':
 				metadata = mpris_metadata_get_current_track(player);
