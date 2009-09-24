@@ -443,3 +443,52 @@ clean:
 	dbus_message_unref(in);
 	free(name);
 }
+
+int
+mpris_dbus_get_length(const char *player)
+{
+	int ret;
+	MPRISMetadata *metadata = malloc(sizeof(MPRISMetadata));
+	memset(metadata, 0x00, sizeof(MPRISMetadata));
+	DBusMessage *in = NULL; /* in as "into DBus" */
+	DBusMessage *out = NULL; /* out as "from DBus" */
+	DBusError err;
+
+	char *name = create_destination_name(player);
+
+	dbus_error_init(&err);
+
+	in = dbus_message_new_method_call(name, MPRIS_TRACKLIST_PATH,
+			MPRIS_FDO_IFACE_NAME, "GetLength");
+
+	out = dbus_connection_send_with_reply_and_block(conn, in,
+			500, &err);
+
+	dbus_message_unref(in);
+	free(name);
+
+	if ((out == NULL) || dbus_error_is_set(&err)) {
+		fprintf (stderr, "%s:%d: Message call failed\n", __FILE__, __LINE__);
+		return -1;
+	}
+
+	DBusMessageIter iter;
+	if (!dbus_message_iter_init (out, &iter)) {
+		fprintf (stderr, "%s:%d: Couldn't init message iter!\n",
+				__FILE__, __LINE__);
+		dbus_message_unref (out);
+		return -1;
+	}
+
+	if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type (&iter)) {
+		fprintf (stderr, "%s:%d: Wrong reply type!\n",
+				__FILE__, __LINE__);
+		dbus_message_unref (out);
+		return -1;
+	}
+
+	dbus_message_iter_get_basic(&iter, &ret);
+
+	return ret;
+}
+

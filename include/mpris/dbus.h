@@ -60,5 +60,8 @@ mpris_dbus_set_random(const char *player, int boolean);
 void
 mpris_dbus_del_track(const char *player, int index);
 
+int
+mpris_dbus_get_length(const char *player);
+
 #endif /* _MPRIS_DBUS_H_ */
 

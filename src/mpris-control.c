@@ -2,6 +2,7 @@
 
 #include <getopt.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct option long_options[] = {
 	{"prev",		0,	NULL,   'p'},
@@ -14,6 +15,8 @@ struct option long_options[] = {
 	{"loopoff",	 	0,  NULL,   'L'},
 	{"randomon",	0,  NULL,   'r'},
 	{"randomoff", 	0,  NULL,   'R'},
+	{"deltrack", 	1,  NULL,   'd'},
+	{"getlength", 	0,  NULL,   'g'},
 	{0,0,0,0}
 };
 
@@ -64,6 +67,12 @@ int main(int argc, char** argv)
 				break;
 			case 'R':
 				mpris_tracklist_set_random(player, 0);
+				break;
+			case 'd':
+				mpris_tracklist_del_track(player, atoi(optarg));
+				break;
+			case 'g':
+				printf("Elements: %d\n", mpris_tracklist_get_length(player));
 				break;
 			case 'm':
 				metadata = mpris_metadata_get_current_track(player);

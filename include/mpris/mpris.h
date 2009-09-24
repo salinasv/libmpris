@@ -85,4 +85,7 @@ mpris_tracklist_set_random(MPRISPlayer *player, int boolean);
 void
 mpris_tracklist_del_track(MPRISPlayer *player, int index);
 
+int
+mpris_tracklist_get_length(MPRISPlayer *player);
+
 #endif /* _MPRIS_H_ */
