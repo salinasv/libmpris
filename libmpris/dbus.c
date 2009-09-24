@@ -370,3 +370,28 @@ mpris_dbus_single_call(const char *player, const char *method)
 	if (!dbus_connection_send(conn, in, NULL))
 		printf("Error sending the %s call.\n", method);
 }
+
+
+void
+mpris_dbus_set_loop(const char *player, int boolean)
+{
+	DBusMessage *in = NULL; /* in as "into DBus" */
+
+	char *name = create_destination_name(player);
+
+	in = dbus_message_new_method_call(name, MPRIS_TRACKLIST_PATH,
+			MPRIS_FDO_IFACE_NAME, "SetLoop");
+
+	if(!dbus_message_append_args(in, DBUS_TYPE_BOOLEAN, &boolean, DBUS_TYPE_INVALID))
+    {
+		fputs("Error appending args to message\n", stderr);
+        goto clean;
+    }
+
+	if (!dbus_connection_send(conn, in, NULL))
+		fputs("Error sending the SetLoop call.\n", stderr);
+
+clean:
+	dbus_message_unref(in);
+	free(name);
+}

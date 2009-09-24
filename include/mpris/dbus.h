@@ -51,5 +51,9 @@ mpris_dbus_get_current_track(const char *player);
 void
 mpris_dbus_single_call(const char *player, const char *method);
 
+void
+mpris_dbus_set_loop(const char *player, int boolean);
+
+
 #endif /* _MPRIS_DBUS_H_ */
 

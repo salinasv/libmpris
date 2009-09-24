@@ -76,4 +76,7 @@ mpris_player_stop(MPRISPlayer *player);
 void
 mpris_player_play(MPRISPlayer *player);
 
+void
+mpris_tracklist_set_loop(MPRISPlayer *player, int boolean);
+
 #endif /* _MPRIS_H_ */

@@ -430,3 +430,8 @@ void mpris_player_play(MPRISPlayer *player)
 {
 	mpris_dbus_single_call(player->p_info->suffix, "Play");
 }
+
+void mpris_tracklist_set_loop(MPRISPlayer *player, int boolean)
+{
+	mpris_dbus_set_loop(player->p_info->suffix, boolean);
+}

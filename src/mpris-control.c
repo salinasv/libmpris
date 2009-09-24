@@ -10,6 +10,8 @@ struct option long_options[] = {
 	{"play",		0,	NULL,   'P'},
 	{"stop",		0,	NULL,   's'},
 	{"metadata", 	0, 	NULL, 	'm'},
+	{"loopon",		0,  NULL,   'l'},
+	{"loopoff",	 	0,  NULL,   'L'},
 	{0,0,0,0}
 };
 
@@ -48,6 +50,12 @@ int main(int argc, char** argv)
 				break;
 			case 's':
 				mpris_player_stop(player);
+				break;
+			case 'l':
+				mpris_tracklist_set_loop(player, 1);
+				break;
+			case 'L':
+				mpris_tracklist_set_loop(player, 0);
 				break;
 			case 'm':
 				metadata = mpris_metadata_get_current_track(player);
