@@ -13,6 +13,7 @@ AC_CONFIG_HEADERS([config.h])
 
 dnl Check for C compiler
 AC_LANG([C])
+AM_PROG_CC_C_O
 AC_ISC_POSIX
 
 dnl Checks for various programs
