@@ -122,6 +122,18 @@ mpris_dbus_init (void)
 	return 1;
 }
 
+static void
+message_unref(DBusMessage *in, DBusMessage *out, char *name)
+{
+	if (in)
+		dbus_message_unref(in);
+
+	if (out)
+		dbus_message_unref(out);
+
+	free(name);
+}
+
 MPRISPlayerInfo*
 mpris_dbus_get_player_info (const char * player)
 {
@@ -290,8 +302,7 @@ mpris_dbus_get_metadata_msg(const char *player, int track)
 	out = dbus_connection_send_with_reply_and_block(conn, in,
 			500, &err);
 
-	dbus_message_unref(in);
-	free(name);
+	message_unref(in, NULL, name);
 
 	if ((out == NULL) || dbus_error_is_set(&err)) {
 		fprintf (stderr, "%s:%d: Message call failed\n", __FILE__, __LINE__);
@@ -329,8 +340,7 @@ mpris_dbus_get_current_track(const char *player)
 	out = dbus_connection_send_with_reply_and_block(conn, in,
 			500, &err);
 
-	dbus_message_unref(in);
-	free(name);
+	message_unref(in, NULL, name);
 
 	if ((out == NULL) || dbus_error_is_set(&err)) {
 		fprintf (stderr, "%s:%d: Message call failed\n", __FILE__, __LINE__);
@@ -385,15 +395,13 @@ mpris_dbus_set_loop(const char *player, int boolean)
 	if(!dbus_message_append_args(in, DBUS_TYPE_BOOLEAN, &boolean, DBUS_TYPE_INVALID))
     {
 		fputs("Error appending args to message\n", stderr);
-        goto clean;
+		message_unref(in, NULL, name);
     }
 
 	if (!dbus_connection_send(conn, in, NULL))
 		fputs("Error sending the SetLoop call.\n", stderr);
 
-clean:
-	dbus_message_unref(in);
-	free(name);
+	message_unref(in, NULL, name);
 }
 
 void
@@ -409,15 +417,13 @@ mpris_dbus_set_random(const char *player, int boolean)
 	if(!dbus_message_append_args(in, DBUS_TYPE_BOOLEAN, &boolean, DBUS_TYPE_INVALID))
     {
 		fputs("Error appending args to message\n", stderr);
-        goto clean;
+		message_unref(in, NULL, name);
     }
 
 	if (!dbus_connection_send(conn, in, NULL))
 		fputs("Error sending the SetRandom call.\n", stderr);
 
-clean:
-	dbus_message_unref(in);
-	free(name);
+	message_unref(in, NULL, name);
 }
 
 void
@@ -433,15 +439,13 @@ mpris_dbus_del_track(const char *player, int index)
 	if(!dbus_message_append_args(in, DBUS_TYPE_INT32, &index, DBUS_TYPE_INVALID))
     {
 		fputs("Error appending args to message\n", stderr);
-        goto clean;
+		message_unref(in, NULL, name);
     }
 
 	if (!dbus_connection_send(conn, in, NULL))
 		fputs("Error sending the SetRandom call.\n", stderr);
 
-clean:
-	dbus_message_unref(in);
-	free(name);
+	message_unref(in, NULL, name);
 }
 
 int
@@ -465,43 +469,39 @@ mpris_dbus_add_track(const char *player, const char *uri, int play)
             DBUS_TYPE_INVALID))
     {
 		fputs("Error appending args to message\n", stderr);
-        goto error;
+		message_unref(in, NULL, name);
+		return -1;
     }
 
 	out = dbus_connection_send_with_reply_and_block(conn, in,
 			500, &err);
 
-	dbus_message_unref(in);
-	free(name);
+	message_unref(in, NULL, name);
 
 	if ((out == NULL) || dbus_error_is_set(&err)) {
 		fprintf (stderr, "%s:%d: Message call failed\n", __FILE__, __LINE__);
-		goto error;
+		message_unref(in, out, name);
+		return -1;
 	}
 
 	DBusMessageIter iter;
 	if (!dbus_message_iter_init (out, &iter)) {
 		fprintf (stderr, "%s:%d: Couldn't init message iter!\n",
 				__FILE__, __LINE__);
-        goto error;
+		message_unref(in, out, name);
+		return -1;
 	}
 
 	if (DBUS_TYPE_INT32 != dbus_message_iter_get_arg_type (&iter)) {
 		fprintf (stderr, "%s:%d: Wrong reply type!\n",
 				__FILE__, __LINE__);
-        goto error;
+		message_unref(in, out, name);
+		return -1;
 	}
 
 	dbus_message_iter_get_basic(&iter, &ret);
 
 	return ret;
-
-error:
-	dbus_message_unref(in);
-	dbus_message_unref(out);
-	free(name);
-
-    return -1;
 }
 
 int
