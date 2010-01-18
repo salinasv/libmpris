@@ -30,10 +30,6 @@ parse_options ()
 #            -n|--no-log)
 #                no_log=1 
 #		;;
-            *)
-                echo Invalid argument - $1
-                dump_help_screen
-                ;;
         esac
         shift
     done
@@ -144,5 +140,12 @@ run_or_die $ACLOCAL
 run_or_die $AUTOCONF
 run_or_die $AUTOHEADER
 run_or_die $AUTOMAKE -a -c
+
+###############################################################################
+# Run Configure
+###############################################################################
+echo "Running ./configure ${CONFIGURE_FLAGS} $@"
+./configure ${CONFIGURE_FLAGS} $@
+
 
 cd $LAST_DIR
